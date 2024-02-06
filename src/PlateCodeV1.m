@@ -3,7 +3,7 @@ close all
 clc 
 %%
 %--- physical and elastic parameters
-load("modestest.mat");
+load("./param/modestest.mat");
 
 
 %--- derived parameters (don't change here)
@@ -25,7 +25,11 @@ end
 
 Id=speye(Nmodes);
 Dw2=diag((2*pi*freqs).^2);
-Ddiag=2*Id-k^2*sparse(Dw2);
+Dw=diag((cos(k*2*pi*freqs)));
+DV0=2*k^(-2)*(Id-diag((cos(k*2*pi*freqs))));
+Ddiag=2*sparse(Dw);
+
+
 
 qm=zeros(Nmodes,1);
 q0=zeros(Nmodes,1);
@@ -46,7 +50,7 @@ w=zeros(Ny+1,Nx+1);
 for n = 1 : Ts
 
     En(n)=0.5*sum(((q0-qm)/k).^2);
-    V0(n)=0.5*sum(Dw2*q0.*qm);
+    V0(n)=0.5*sum(DV0*q0.*qm);
     qs=Ddiag*q0-qm;
     
     qm=q0;
@@ -100,17 +104,17 @@ plot(t,(E-E(3))/E(3))
 % xlim([0 freqs(end)])
 
 %%
-% mmoutu=max(max(max(W(:,:,:))));
-% figure
-% 
-% gif('modeplate.gif') 
-% for n=2:length(t)-1
-% surf(x,y,W(:,:,n),"LineWidth",3)
-% shading interp
-% zlim([-mmoutu mmoutu])
-% drawnow
-% gif
-% pause(0.001)
-% 
-% end
+mmoutu=max(max(max(W(:,:,:))));
+figure
+
+gif('modeplate.gif') 
+for n=2:length(t)-1
+surf(x,y,W(:,:,n),"LineWidth",3)
+shading interp
+zlim([-mmoutu mmoutu])
+drawnow
+gif
+pause(0.001)
+
+end
 
