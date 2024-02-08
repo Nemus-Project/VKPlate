@@ -40,7 +40,7 @@ for m = 1 : Nmodes
     mdShapes(:,:,m) = reshape(V(:,m),[(Ny+1),(Nx+1)]) ;
    %subplot(4,4,m)
    %mesh(3000*(mdShapes(:,:,m)),(abs(mdShapes(:,:,m))),'FaceColor','texturemap') ;  %axis equal; axis tight ; view(2) ;
-   pext(:,m)=-100*rho*h^(-3)*Fext*mdShapes(floor(end/2),floor(end/2),m);
+   pext(:,m)=100*rho*h^(-3)*Fext*mdShapes(floor(end/4),floor(end/4),m);
    
 end
 pext=pext';
@@ -54,6 +54,9 @@ DV0=2*k^(-2)*(Id-diag((cos(k*2*pi*freqs))));
 Ddiag=2*sparse(Dw);
 %Ddiag=2*Id-k^2*Dw2;
 Ddamp=2*diag(2*pi*freqs.*chi);
+Dimpl=Id+k*Ddamp/2;
+%Dimpl=
+Ddamp2=Id-k*Ddamp/2;
 
 %%
 qm=zeros(Nmodes,1);
@@ -75,7 +78,8 @@ for n = 1 : Ts
 
     En(n)=0.5*sum(((q0-qm)/k).^2);
     V0(n)=0.5*sum(DV0*q0.*qm);
-    qs=Ddiag*q0-qm-k*Ddamp*(q0-qm)+k^2*pext(:,n);
+    %qs=Ddiag*q0-qm-k*Ddamp*(q0-qm)+k^2*pext(:,n);
+    qs=Dimpl\(Ddiag*q0-Ddamp2*qm+k^2*pext(:,n));
     
     qm=q0;
     q0=qs;
@@ -135,20 +139,20 @@ mmoutu=max(max(max(W(:,:,:))));
 figure('Position', [1000 1000 600 600],'Color','w')
 surf(x,y,W(:,:,1),"LineWidth",3)
 %view(az,el)
-light("Style","local","Position",[-10 -10 0]);
-lighting gouraud;material dull ;
+%light("Style","local","Position",[-10 -10 0]);
+%lighting gouraud;material dull ;
 set(gca,'Color','w');grid off;
 colormap(HA2);shading interp;
-zlim([-5*mmoutu 5*mmoutu])
+zlim([-mmoutu 1*mmoutu])
 caxis([-mmoutu mmoutu])
 xticks([]);yticks([]);zticks([]);
 axis off
 drawnow
-gif('modeplatebigwb.gif') 
-for n=1:1:length(t)-1%50
+gif('modeplatemicheleup.gif') 
+for n=11:10:500
 surf(x,y,W(:,:,n),"LineWidth",3)
-light("Style","local","Position",[-10 -10 0]);
-lighting gouraud
+%light("Style","local","Position",[-10 -10 0]);
+%lighting gouraud
 set(gca,'Color','w')
 %view(az,el)
 caxis([-mmoutu mmoutu])
@@ -157,7 +161,7 @@ grid off;xticks([]);yticks([]);zticks([]);
 axis off
 %colormap(HA2);
 shading interp
-zlim([-5*mmoutu 5*mmoutu])
+zlim([-mmoutu 1*mmoutu])
 drawnow
 gif
 pause(0.05)
