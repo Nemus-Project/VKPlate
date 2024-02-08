@@ -3,8 +3,8 @@ close all
 clc
 
 %--- physical and elastic parameters
-Lx      = 0.10 ;               %-- length along x [m]
-Ly      = 0.08 ;               %-- length along y [m]
+Lx      = 0.50 ;               %-- length along x [m]
+Ly      = 0.70 ;               %-- length along y [m]
 Lz      = 0.81e-3 ;            %-- thickness [m]
 E       = 1.01e+11 ;           %-- Young's mod [Pa]
 rho     = 8765 ;               %-- density [kg/m^3]
@@ -41,7 +41,7 @@ Ny      = floor(Ly/h) ;
 
 %return
 %-- number of modes to be computed
-Nmodes  = 1 ;
+Nmodes  = 100 ;
 %----------------------------
 
 
@@ -435,7 +435,7 @@ if Nmodes > 8
     end
 end
 
-save("modestes3.mat","Nmodes","V","freqs","Df","Lx","Ly","Nx","Ny","Lz","E","rho","nu");
+save("./param/modesteswb.mat","Nmodes","V","freqs","Df","Lx","Ly","Nx","Ny","Lz","E","rho","nu","h");
 
 %------------ a bunch of functions ... these are only storing coefficients
 %values really ....
