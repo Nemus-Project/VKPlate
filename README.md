@@ -1,20 +1,17 @@
 # What is this
 
-## ABout
+## About
 
-What is it about?
+First code generate modal basis with user defined parameters and boundary conditions, second code solves the modal problem and can plot the resulting displacement
 
 ### Example
-
-What does it look like
 
 ![16-mode modal plate doing with initial excitation](./img/modeplate.gif)
 
 ## Goals
 
-What do you intend to achieve?
+Energy conservation (which is achieved). Later versions will have means to excite the plate instead of an initial displacement.
 
 ## References
 
-- Any?
-- references?
+TBC
