@@ -214,9 +214,20 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     case 'laplace'
 
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,Ix);
-      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      else
+
+      end
+    
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,Iy);
-      YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      else
+
+      end
+
       LA = kron(XX,Iy) + kron(Ix,YY);
       outM = LA;
 
@@ -225,7 +236,7 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       %% Building Bi-Harmonic
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,Ix);
+      
 
       if (bctype == 1 || bctype == 2) % simply supported OR clamped
         XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
