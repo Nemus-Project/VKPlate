@@ -190,6 +190,11 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
       X = spdiags([-ones(m,1),zeros(m,1),ones(m,1)],[-1:1],speye(m));
       outM = kron(X,Iy) + kron(Ix,Y);
 
+    case 'xy'
+      Y = spdiags([-ones(l,1),zeros(l,1),ones(l,1)],[-1:1],speye(l));
+      X = spdiags([-ones(m,1),zeros(m,1),ones(m,1)],[-1:1],speye(m));
+      outM = kron(X,Iy) * kron(Ix,Y);
+
     case 'xxyy'
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
