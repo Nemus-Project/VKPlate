@@ -164,13 +164,25 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     case 'xx'
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
-      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      else
+
+      end
+
       outM = kron(XX,Iy);
 
     case 'xxxx'
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
-      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      else
+
+      end
+
       outM = kron(XX,Iy)^2;
 
     case 'grad'
@@ -181,11 +193,21 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     case 'xxyy'
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
-      YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      else
+
+      end
 
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
-      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      else
+
+      end
 
       outM = kron(Ix,YY)*kron(XX,Iy);
 
@@ -204,9 +226,21 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
       %% Building Bi-Harmonic
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,Ix);
-      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
+      else
+
+      end
+    
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,Iy);
-      YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      else
+
+      end
+      
       LA = kron(XX,Iy) + kron(Ix,YY);
       BH = LA*LA;
       outM = BH;
@@ -221,7 +255,10 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     end
 
     % set the correct points to 0
-    outM(:,[1:l+1, ss-l:ss]) = 0;outM([1:l+1, ss-l:ss],:) = 0;
-    outM(:,[2*l:l:ss, (2*l)+1:l:ss]) = 0; outM([2*l:l:ss, (2*l)+1:l:ss],:) = 0;
+    if (bctype == 1 || bctype == 2) % simply supported OR clamped
+     outM(:,[1:l+1, ss-l:ss]) = 0;outM([1:l+1, ss-l:ss],:) = 0;
+     outM(:,[2*l:l:ss, (2*l)+1:l:ss]) = 0; outM([2*l:l:ss, (2*l)+1:l:ss],:) = 0;
+    else
 
+    end
   end
