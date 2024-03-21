@@ -236,7 +236,7 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       %% Building Bi-Harmonic
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      
+      XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,Ix);
 
       if (bctype == 1 || bctype == 2) % simply supported OR clamped
         XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
