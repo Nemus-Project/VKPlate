@@ -164,11 +164,7 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     case 'xx'
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,speye(m));
-      if true
-        XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
-      else
-          % write here
-      end
+      XX(1,2) = (bctype-1)*2; XX(m,m-1) = (bctype-1)*2;
       outM = kron(XX,Iy);
 
     case 'xxxx'
