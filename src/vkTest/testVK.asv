@@ -1,0 +1,41 @@
+%---- test VK coefficient calc
+clear all
+close all
+clc
+
+
+%------------------------------------------------------------------------
+% custom params
+rho     = 8000 ;
+E       = 2e11 ;
+nu      = 0.3 ;
+Lz      = 1e-3 ;
+Lx      = 0.6 ;
+Ly      = 0.4 ;
+hfrac   = 0.1 ;   %-- computed as a fraction of sqrt(Lx*Ly) 
+Nmodes  = [] ;
+%BCs Transv 
+BCsPhi = [0 0 ; 1e15 1e15 ; 0 0 ; 0 0] ;
+
+%BCs Airy 
+BCsPsi = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
+%-- NB: these represent mathematically "clamped" BCs, but "free" physically
+%-- this choice enables the "triple self-adjointness" property, so best to keep these as is
+
+%------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------
+% derived params
+h       = sqrt(Lx*Ly)*hfrac ;
+ldim    = [Lx Ly Lz] ;
+
+
+[Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",1) ;
+[~,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",1) ;
+
+
+
+
+
+
