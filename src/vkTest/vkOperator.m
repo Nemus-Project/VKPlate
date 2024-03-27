@@ -1,8 +1,9 @@
-function L = vkOperator(F1,F2,h,Nx,Ny)
+function L = vkOperator(F1,F2,Dx,Dy,Dxx,Dyy)
 
-Dx = DxBuild(Nx,Ny,h) ;
-Dy = DyBuild(Nx,Ny,h) ;
+% Dxx = Dx*Dx ;
+% Dyy = Dy*Dy ;
+Dxy = Dx*Dy ;
 
-L = (Dx*Dx*F1).*(Dy*Dy*F2) + (Dy*Dy*F1).*(Dx*Dx*F2) - 2*(Dx*Dy*F1).*(Dx*Dy*F2) ;
+L = (Dxx*F1).*(Dyy*F2) + (Dyy*F1).*(Dxx*F2) - 2*(Dxy*F1).*(Dxy*F2) ;
 
 end
