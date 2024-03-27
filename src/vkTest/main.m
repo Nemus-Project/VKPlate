@@ -12,7 +12,7 @@ nu      = 0.3 ;
 Lz      = 1e-3 ;
 Lx      = 0.6 ;
 Ly      = 0.4 ;
-hfrac   = 0.001 ;   %-- computed as a fraction of sqrt(Lx*Ly)
+hfrac   = 0.01 ;   %-- computed as a fraction of sqrt(Lx*Ly)
 Nmodes  = 5 ;
 %BCs Transv
 BCsPhi  = [0 0 ; 1e15 1e15 ; 0 0 ; 0 0] ;
