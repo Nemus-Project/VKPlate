@@ -95,12 +95,17 @@ fyy     = -5/Ly*5/Ly*cos(4*X/Lx).*sin(5*Y/Ly) ;
 F       = reshape(f,[(Nx+1)*(Ny+1) 1]) ;
 Fx      = Dx*F ;
 Fy      = Dy*F ;
-Fxy     = Dx*Dy*F ; %-- can use Fxy = Dy*Dx*F ; as well (commutative operation)
-Fxx     = Dx*Dx*F ;
-Fyy     = Dy*Dy*F ;
-Dxx     = Dx*Dx   ;
-Dyy     = Dy*Dy   ;
+
+
+Dxx     = DxxBuild(Nx,Ny,h,"diag");
+Dyy     = DyyBuild(Nx,Ny,h,"diag");
 Dxy     = Dx*Dy   ;
+Fxy     = Dx*Dy*F ; %-- can use Fxy = Dy*Dx*F ; as well (commutative operation)
+Fxx     = Dxx*F ;
+Fyy     = Dyy*F ;
+%Dxx     = Dx*Dx   ;
+%Dyy     = Dy*Dy   ;
+%Dxy     = Dx*Dy   ;
 
 
 % figure
