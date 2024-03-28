@@ -140,7 +140,12 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
     case 'yy'
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
       YY = spdiags([ones(l,1),-2*ones(l,1),ones(l,1)],-1:1,speye(l));
-      YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      if (bctype == 1 || bctype == 2) % simply supported OR clamped
+        YY(1,2) = (bctype-1)*2; YY(l,l-1) = (bctype-1)*2;
+      else
+        %YY(1:l:l*m,)
+      end
+
       outM = kron(Ix,YY);
 
     case 'yyyy'
@@ -185,7 +190,7 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
 
       outM = kron(XX,Iy)^2;
 
-    case 'grad'
+    case {'grad','nabla'}
       Y = spdiags([-ones(l,1),zeros(l,1),ones(l,1)],[-1:1],speye(l));
       X = spdiags([-ones(m,1),zeros(m,1),ones(m,1)],[-1:1],speye(m));
       outM = kron(X,Iy) + kron(Ix,Y);
@@ -216,7 +221,7 @@ function outM = fidimat(arg1,arg2,arg3,arg4)
 
       outM = kron(Ix,YY)*kron(XX,Iy);
 
-    case 'laplace'
+    case {'laplace','nabla2'}
 
       XX = spdiags([ones(m,1),-2*ones(m,1),ones(m,1)],-1:1,Ix);
       if (bctype == 1 || bctype == 2) % simply supported OR clamped
