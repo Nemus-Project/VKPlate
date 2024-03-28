@@ -1,0 +1,3 @@
+[submodule "src/magpie"]
+	path = src/magpie
+	url = https://github.com/Nemus-Project/magpie-matlab.git
