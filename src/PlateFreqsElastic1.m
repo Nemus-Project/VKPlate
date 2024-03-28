@@ -3,8 +3,8 @@ close all
 clc
 
 %--- physical and elastic parameters
-Lx      = 0.50 ;               %-- length along x [m]
-Ly      = 0.70 ;               %-- length along y [m]
+Lx      = 0.80 ;               %-- length along x [m]
+Ly      = 0.80 ;               %-- length along y [m]
 Lz      = 0.81e-3 ;            %-- thickness [m]
 E       = 1.01e+11 ;           %-- Young's mod [Pa]
 rho     = 8765 ;               %-- density [kg/m^3]
@@ -19,13 +19,13 @@ nu      = 0.3 ;                %-- poisson's ratio
 % rho     = rho*rand(1) ;            %-- density [kg/m^3]
 %-- elastic constants around the edges
 K0y     = 1e15 ;
-R0y     = 1e15 ;
+R0y     = 0e15 ;
 Kx0     = 1e15 ;
-Rx0     = 1e15 ;
+Rx0     = 0e15 ;
 KLy     = 1e15 ;
-RLy     = 1e15;
+RLy     = 0e15;
 KxL     = 1e15 ;
-RxL     = 1e15 ;
+RxL     = 0e15 ;
 
 
 
@@ -35,13 +35,13 @@ D       = E * Lz^3 / 12 / (1-nu^2) ;
 k       =1/44100;
 kappa   =sqrt(D/(rho*Lz));
 %h       =2*sqrt(kappa*k)
-h       = sqrt(Lx*Ly)*0.01; 
+h       = 0.67*(sqrt(Lx*Ly)*0.01); 
 Nx      = floor(Lx/h) ;
 Ny      = floor(Ly/h) ;
 
 %return
 %-- number of modes to be computed
-Nmodes  = 100 ;
+Nmodes  = 16 ;
 %----------------------------
 
 
@@ -435,7 +435,7 @@ if Nmodes > 8
     end
 end
 
-save("./param/modesteswb.mat","Nmodes","V","freqs","Df","Lx","Ly","Nx","Ny","Lz","E","rho","nu","h");
+save("./param/modesint067.mat","Nmodes","V","freqs","Df","Lx","Ly","Nx","Ny","Lz","E","rho","nu","h");
 
 %------------ a bunch of functions ... these are only storing coefficients
 %values really ....
