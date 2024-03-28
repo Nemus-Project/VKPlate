@@ -2,3 +2,6 @@
 src/modeplate.gif
 *.asv
 *.gif
+*.mat
+*.zip
+src/param/
