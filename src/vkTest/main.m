@@ -13,7 +13,7 @@ Lz      = 1e-3 ;
 Lx      = 0.6 ;
 Ly      = 0.4 ;
 hfrac   = 0.005 ;   %-- computed as a fraction of sqrt(Lx*Ly)
-Nmodes  = 5 ;
+Nmodes  = 7 ;
 %BCs Transv
 BCsPhi  = [0 0 ; 1e15 1e15 ; 0 0 ; 0 0] ;
 
@@ -22,7 +22,7 @@ BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 %-- NB: these represent mathematically "clamped" BCs, but "free" physically
 %-- this choice enables the "triple self-adjointness" property, so best to keep this as is
 
-Ntensor = 5 ;
+Ntensor = Nmodes;
 %------------------------------------------------------------------------
 
 
@@ -54,6 +54,17 @@ for k = 1 : Ntensor
         end
     end
 end
+%%
+for k=1:Nmodes
+    for p=1:Nmodes
+        for q=1:Nmodes
+            symmetryH=H(k,p,q)-H(k,q,p)
+            %symmetryE=H(k,p,q)-E(q,p,k)
+        end
+    end
+end
+
+
 
 
 
