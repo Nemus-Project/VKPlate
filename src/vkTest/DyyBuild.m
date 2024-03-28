@@ -1,5 +1,29 @@
-function Dyy = DyyBuild(Nx,Ny,h)
+function Dyy = DyyBuild(Nx,Ny,h,method)
+% Dyy = DYYBUILD(Nx,Ny,h,method)
+%
+%       Nx     : number of grid points x-axis
+%       Ny     : number of grid points y-axis
+%       h      : grid spacing 
+%       method : method for building matrix: 'blk' or 'diag'
+%
+%------------------------------------------------------------------------
 
+% Parse args
+if nargin < 4
+    if (Nx*Ny) < 1000
+        method = 'blk';
+    else
+        method = 'diag';
+    end
+end
+
+%% Validate Arguments
+valid_methods = ["blk", "diag"];
+
+validateattributes(Nx, {'numeric'}, {'integer','positive'});
+validateattributes(Ny, {'numeric'}, {'integer','positive'});
+validateattributes(h,  {'numeric'}, {'real','positive'});
+method = validatestring (method,    valid_methods);
 %------------------------------------------------------------------------
 % Dy
 DyyBlk = sparse(Ny+1,Ny+1) ;
