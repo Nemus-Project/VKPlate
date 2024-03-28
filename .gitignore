@@ -4,4 +4,7 @@ src/modeplate.gif
 *.gif
 *.mat
 *.zip
+*.png
+*.fig
 src/param/
+
