@@ -11,7 +11,7 @@ HA2=load("Ha2ColorMap.mat").Ha2ColorMap;
 %--- derived parameters (don't change here)
 D       = E * Lz^3 / 12 / (1-nu^2) ;
 k       = 1/44100 ;% Timestep
-T       = 0.5;
+T       = 1.5;
 Ts      = floor(T/k) ;% Number of time grid points
 t       =linspace(0,T,Ts);
 x       =linspace(0,Lx,Nx+1);
@@ -55,6 +55,7 @@ Ddiag=2*sparse(Dw);
 %Ddiag=2*Id-k^2*Dw2;
 Ddamp=2*diag(2*pi*freqs.*chi);
 Dimpl=Id+k*Ddamp/2;
+Dexp=sparse(inv(Dimpl));
 %Dimpl=
 Ddamp2=Id-k*Ddamp/2;
 
@@ -73,14 +74,14 @@ W=zeros(Ny+1,Nx+1,Ts);
 %q0=qm;
 w=zeros(Ny+1,Nx+1);
 
-
+tic
 for n = 1 : Ts
 
     En(n)=0.5*sum(((q0-qm)/k).^2);
     V0(n)=0.5*sum(DV0*q0.*qm);
     %qs=Ddiag*q0-qm-k*Ddamp*(q0-qm)+k^2*pext(:,n);
-    qs=Dimpl\(Ddiag*q0-Ddamp2*qm+k^2*pext(:,n));
-    
+    %qs=Dimpl\(Ddiag*q0-Ddamp2*qm+k^2*pext(:,n));
+    qs=Dexp*(Ddiag*q0-Ddamp2*qm+k^2*pext(:,n));
     qm=q0;
     q0=qs;
     
@@ -90,12 +91,8 @@ for n = 1 : Ts
         w=w+q0(m)*mdShapes(:,:,m);
     end
     W(:,:,n)=w;
-    
-
-    
 end
-
-
+toc
 
 
 
