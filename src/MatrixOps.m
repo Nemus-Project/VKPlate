@@ -8,17 +8,20 @@
 
 
 clear all
-close all
+%close all
 clc
 
 %------------------------------------------------------------------------
 % custom plate parameters
 Lx = 1 ;
 Ly = 0.7 ;
-h  = sqrt(Lx*Ly)*0.01 ;
+nums=linspace(0.01,1,100);
+
+hsp  = nums*sqrt(Lx*Ly)*0.1 ;
 %------------------------------------------------------------------------
-
-
+for i=1:100
+    %tic
+h=hsp(i);
 %------------------------------------------------------------------------
 % derived parameters
 Nx = floor(Lx/h) ; 
@@ -95,51 +98,91 @@ Fy      = Dy*F ;
 Fxy     = Dx*Dy*F ; %-- can use Fxy = Dy*Dx*F ; as well (commutative operation)
 Fxx     = Dx*Dx*F ;
 Fyy     = Dy*Dy*F ;
-
-figure
-subplot(1,2,1)
-mesh(X,Y,fx) ; view(2); title('fx')
-subplot(1,2,2)
-Fx = reshape(Fx,[(Ny+1) (Nx+1)]) ;
-mesh(X,Y,Fx) ; view(2); title('Fx')
+Dxx     = Dx*Dx   ;
+Dyy     = Dy*Dy   ;
+Dxy     = Dx*Dy   ;
 
 
-figure
-subplot(1,2,1)
-mesh(X,Y,fy) ; view(2); title('fy')
-subplot(1,2,2)
-Fy = reshape(Fy,[(Ny+1) (Nx+1)]) ;
-mesh(X,Y,Fy) ; view(2); title('Fy')
-
-
-figure
-subplot(1,2,1)
-mesh(X,Y,fxy) ; view(2); title('fxy')
-subplot(1,2,2)
-Fxy = reshape(Fxy,(Ny+1),(Nx+1)) ;
-mesh(X,Y,Fxy) ; view(2); title('Fxy')
-
-figure
-subplot(1,2,1)
-mesh(X,Y,fxx) ; view(2); title('fxx')
-subplot(1,2,2)
-Fxx = reshape(Fxx,(Ny+1),(Nx+1)) ;
-mesh(X,Y,Fxx) ; view(2); title('Fxx')
-
-figure
-subplot(1,2,1)
-mesh(X,Y,fyy) ; view(2); title('fyy')
-subplot(1,2,2)
-Fyy = reshape(Fyy,(Ny+1),(Nx+1)) ;
-mesh(X,Y,Fyy) ; view(2); title('Fyy')
+% figure
+% subplot(1,2,1)
+% mesh(X,Y,fx) ; view(2); title('fx')
+% subplot(1,2,2)
+ Fx = reshape(Fx,[(Ny+1) (Nx+1)]) ;
+% mesh(X,Y,Fx) ; view(2); title('Fx')
+% 
+% 
+% figure
+% subplot(1,2,1)
+% mesh(X,Y,fy) ; view(2); title('fy')
+% subplot(1,2,2)
+ Fy = reshape(Fy,[(Ny+1) (Nx+1)]) ;
+% mesh(X,Y,Fy) ; view(2); title('Fy')
+% 
+% 
+% figure
+% subplot(1,2,1)
+% mesh(X,Y,fxy) ; view(2); title('fxy')
+% subplot(1,2,2)
+ Fxy = reshape(Fxy,(Ny+1),(Nx+1)) ;
+% mesh(X,Y,Fxy) ; view(2); title('Fxy')
+% 
+% figure
+% subplot(1,2,1)
+% mesh(X,Y,fxx) ; view(2); title('fxx')
+% subplot(1,2,2)
+ Fxx = reshape(Fxx,(Ny+1),(Nx+1)) ;
+% mesh(X,Y,Fxx) ; view(2); title('Fxx')
+% 
+% figure
+% subplot(1,2,1)
+% mesh(X,Y,fyy) ; view(2); title('fyy')
+% subplot(1,2,2)
+ Fyy = reshape(Fyy,(Ny+1),(Nx+1)) ;
+% mesh(X,Y,Fyy) ; view(2); title('Fyy')
 %------------------------------------------------------------------------
+errmidx(i)=abs(fx(ceil(Ny/2),ceil(Nx/2))-Fx(ceil(Ny/2),ceil(Nx/2)));
+errmidy(i)=abs(fy(ceil(Ny/2),ceil(Nx/2))-Fy(ceil(Ny/2),ceil(Nx/2)));
+errmidxx(i)=abs(fxx(ceil(Ny/2),ceil(Nx/2))-Fxx(ceil(Ny/2),ceil(Nx/2)));
+errmidxy(i)=abs(fxy(ceil(Ny/2),ceil(Nx/2))-Fxy(ceil(Ny/2),ceil(Nx/2)));
+errmidyy(i)=abs(fyy(ceil(Ny/2),ceil(Nx/2))-Fyy(ceil(Ny/2),ceil(Nx/2)));
 
+errbcx(i)=abs(fx(end,end)-Fx(end,end));
+errbcy(i)=abs(fy(end,end)-Fy(end,end));
+errbcxx(i)=abs(fxx(end,end)-Fxx(end,end));
+errbcxy(i)=abs(fxy(end,end)-Fxy(end,end));
+errbcyy(i)=abs(fyy(end,end)-Fyy(end,end));
+%toc
+end
+%%
+ close all
+% 
+% figure
+% loglog(hsp,errmidxx,LineWidth=2)
+% hold on
+% loglog(hsp,errmidyy,LineWidth=2)
+% loglog(hsp,errmidxy,LineWidth=2)
+% loglog(hsp,errmidx,LineWidth=2)
+% loglog(hsp,errmidy,LineWidth=2)
+% legend("Dxx","Dyy","Dxy","Dx","Dy")
+% xlabel("h")
+% ylabel("Absolute error")
+% set(gca,'Fontsize',20)
+% title("Error in the middle",'FontSize',25)
 
+figure
+loglog(hsp,errbcxx,LineWidth=2)
+hold on
+loglog(hsp,errbcyy,LineWidth=2)
+loglog(hsp,errbcxy,LineWidth=2)
+loglog(hsp,errbcx,LineWidth=2)
+loglog(hsp,errbcy,LineWidth=2)
+legend("Dxx","Dyy","Dxy","Dx","Dy")
+%legend("Dxx","Dyy","Dx","Dy")
+xlabel("h")
+ylabel("Absolute error")
+set(gca,'Fontsize',20)
+title("Error at the boundary",'FontSize',25)
 
-
-
-
-
-
-
+%%
+slope_i2_i1 = log10(errbcyy(1)/errbcyy(2))/log10(hsp(1)/hsp(2))
 
