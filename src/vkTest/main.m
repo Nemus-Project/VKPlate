@@ -12,8 +12,8 @@ nu      = 0.3 ;
 Lz      = 1e-3 ;
 Lx      = 0.6 ;
 Ly      = 0.4 ;
-hfrac   = 0.005 ;   %-- computed as a fraction of sqrt(Lx*Ly)
-Nmodes  = 7 ;
+hfrac   = 0.01 ;   %-- computed as a fraction of sqrt(Lx*Ly)
+Nmodes  = 5 ;
 %BCs Transv
 BCsPhi  = [0 0 ; 1e15 1e15 ; 0 0 ; 0 0] ;
 
@@ -34,9 +34,15 @@ ldim    = [Lx Ly Lz] ;
 
 [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",1) ;
 [~,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",1) ;
+zeta = (zetafourth).^(1/4) ;
 
 H = zeros(Ntensor,Ntensor,Ntensor) ;
 E = zeros(Ntensor,Ntensor,Ntensor) ;
+
+Dxx = DxxBuild(Nx,Ny,h) ;
+Dyy = DyyBuild(Nx,Ny,h) ;
+Dx  = DxBuild(Nx,Ny,h) ;
+Dy  = DyBuild(Nx,Ny,h) ;
 
 for k = 1 : Ntensor
     Phik = Phi(:,k) ; Psik = Psi(:,k) ;
@@ -45,8 +51,8 @@ for k = 1 : Ntensor
         for q = 1 : Ntensor
             Phiq = Phi(:,q) ; Psiq = Psi(:,q) ;
 
-            LPhipPhiq = vkOperator(Phip,Phiq,h,Nx,Ny) ;
-            LPhipPsiq = vkOperator(Phip,Psiq,h,Nx,Ny) ;
+            LPhipPhiq = vkOperator(Phip,Phiq,Dx,Dy,Dxx,Dyy) ;
+            LPhipPsiq = vkOperator(Phip,Psiq,Dx,Dy,Dxx,Dyy) ;
 
             H(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny) ;
             E(k,p,q) = trapzIntcalc(Phik.*LPhipPsiq,h,Nx,Ny) ;
