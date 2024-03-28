@@ -79,5 +79,9 @@ switch type
         outM = Dy*Dy;
     case 'Dxy'
         outM = Dx*Dy;
+    case 'Dxxxx'
+        Dxx= Dx*Dx;
+        outM = Dxx*Dxx;
+
 end
     
