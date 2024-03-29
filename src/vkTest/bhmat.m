@@ -885,7 +885,7 @@ dpNy2([1,2,Ny,Ny+1]) = [D20u30,D21u31,D2Nm1u3Nm1,D2Nu3N];
 dpNyM = D12u02*a0;
 dpNyM([1,2,Ny,Ny+1]) = [D10u00,D11u01,D1Nm1u0Nm1,D1Nu0N];
 
-DNy = [dpNy0;dpNy1;repmat(dpNy2,(Nx-3),1);dmNyM];
+DNy = [dpNy0;dpNy1;repmat(dpNy2,(Nx-3),1);dpNyM];
 
 assert(all((diag(Blk12,0) - dpNy0) == 0), "d01 incorrect");
 assert(all((diag(Blk23,0) - dpNy1) == 0), "d02 incorrect");
@@ -998,10 +998,8 @@ BHdiags = [Dm2Ny,...
 
 dn = [-(2*(Nx+1)),-(Nx+2),-(Nx+1),-(Nx), (-2:2), (Nx),(Nx+1),(Nx+2), 2*(Nx+1)];
 
-BH = sparse((Nx+1)*(Ny+1),(Nx+1)*(Ny+1)) ;
+biHarm = sparse((Nx+1)*(Ny+1),(Nx+1)*(Ny+1)) ;
+biHarm = spdiags(BHdiags, dn, BH)/h^4;
 
-BH = spdiags(BHdiags, dn, BH)/h^4;
-
-spy(biHarm - BH);
 end
 
