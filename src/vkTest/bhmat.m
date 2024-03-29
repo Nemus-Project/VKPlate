@@ -665,53 +665,53 @@ assert(all((diag(BlkMM,-1) - dm1M) <= eps), "d0M incorrect");
 Dm1 = [dm10;0;dm11;0;repmat([dm12;0],Nx+1-4,1);dm1M1;0;dm1M];
 
 %% d00
-[d0,d1,dc,dMm,dM] = biharmdiag(BCs,h,D,nu);
+[~,~,~,~,~] = biharmdiag(BCs,h,D,nu);
 
-[D00u00,D00u10,D00u20,D00u01,D00u02,D00u11] = D00_coeffs(K0y,R0y,Kx0,Rx0,h,D,nu) ;
-[D01u01,D01u11,D01u21,D01u00,D01u02,D01u03,D01u12,D01u10] = D01_coeffs(K0y,R0y,Rx0,h,D,nu) ;
-[D02u02,D02u12,D02u22,D02u01,D02u03,D02u04,D02u00,D02u13,D02u11] = D02_coeffs(K0y,R0y,h,D,nu) ;
-[D0Nu0N,D0Nu1N,D0Nu2N,D0Nu0Nm1,D0Nu0Nm2,D0Nu1Nm1] = D00_coeffs(K0y,R0y,KxL,RxL,h,D,nu) ;
-[D0Nm1u0Nm1,D0Nm1u1Nm1,D0Nm1u2Nm1,D0Nm1u0N,D0Nm1u0Nm2,D0Nm1u0Nm3,D0Nm1u1Nm2,D0Nm1u1N] = D01_coeffs(K0y,R0y,RxL,h,D,nu) ;
+[D00u00,~,~,~,~,~] = D00_coeffs(K0y,R0y,Kx0,Rx0,h,D,nu) ;
+[D01u01,~,~,~,~,~,~,~] = D01_coeffs(K0y,R0y,Rx0,h,D,nu) ;
+[D02u02,~,~,~,~,~,~,~,~] = D02_coeffs(K0y,R0y,h,D,nu) ;
+[D0Nu0N,~,~,~,~,~] = D00_coeffs(K0y,R0y,KxL,RxL,h,D,nu) ;
+[D0Nm1u0Nm1,~,~,~,~,~,~,~] = D01_coeffs(K0y,R0y,RxL,h,D,nu) ;
 
 d00 = D02u02*a0;
 d00([1,2,Ny,Ny+1]) = [D00u00, D01u01, D0Nm1u0Nm1, D0Nu0N];
 
-[D10u10, D10u20, D10u30, D10u00, D10u11, D10u12, D10u21, D10u01] = D10_coeffs(R0y,Kx0,Rx0,h,D,nu) ;
-[D11u11,D11u12,D11u13,D11u10,D11u01,D11u21,D11u31,D11u22,D11u20,D11u00,D11u02] = D11_coeffs(R0y,Rx0,h,D,nu) ;
-[D12u12,D12u13,D12u14,D12u11,D12u10,D12u02,D12u22,D12u32,D12u23,D12u21,D12u01,D12u03] = D12_coeffs(R0y,h,D,nu) ;
-[D1Nu1N, D1Nu2N, D1Nu3N, D1Nu0N, D1Nu1Nm1, D1Nu1Nm2, D1Nu2Nm1, D1Nu0Nm1] = D10_coeffs(R0y,KxL,RxL,h,D,nu) ;
-[D1Nm1u1Nm1,D1Nm1u1Nm2,D1Nm1u1Nm3,D1Nm1u1N,D1Nm1u0Nm1,D1Nm1u2Nm1,D1Nm1u3Nm1,D1Nm1u2Nm2,D1Nm1u2N,D1Nm1u0N,D1Nm1u0Nm2] = D11_coeffs(R0y,RxL,h,D,nu) ;
+[D10u10, ~, ~, ~, ~, ~, ~, ~] = D10_coeffs(R0y,Kx0,Rx0,h,D,nu) ;
+[D11u11,~,~,~,~,~,~,~,~,~,~] = D11_coeffs(R0y,Rx0,h,D,nu) ;
+[D12u12,~,~,~,~,~,~,~,~,~,~,~] = D12_coeffs(R0y,h,D,nu) ;
+[D1Nu1N, ~, ~, ~, ~, ~, ~, ~] = D10_coeffs(R0y,KxL,RxL,h,D,nu) ;
+[D1Nm1u1Nm1,~,~,~,~,~,~,~,~,~,~] = D11_coeffs(R0y,RxL,h,D,nu) ;
 
 
 d01 = D12u12*a0;
 d01([1,2,Ny,Ny+1]) = [D10u10, D11u11, D1Nm1u1Nm1, D1Nu1N];
 
-[D20u20,D20u21,D20u22,D20u10,D20u30,D20u40,D20u00,D20u31,D20u11] = D20_coeffs(Kx0,Rx0,h,D,nu) ;
-[D21u21,D21u22,D21u23,D21u20,D21u11,D21u31,D21u41,D21u01,D21u32,D21u30,D21u10,D21u12] = D21_coeffs(Rx0,h,D,nu) ;
-[D22u20,D22u11,D22u21,D22u31,D22u02,D22u12,D22u22,D22u32,D22u42,D22u13,D22u23,D22u33,D22u24] = D22_coeffs ;
-[D2Nu2N,D2Nu2Nm1,D2Nu2Nm2,D2Nu1N,D2Nu3N,D2Nu4N,D2Nu0N,D2Nu3Nm1,D2Nu1Nm1] = D20_coeffs(KxL,RxL,h,D,nu) ;
-[D2Nm1u2Nm1,D2Nm1u2Nm2,D2Nm1u2Nm3,D2Nm1u2N,D2Nm1u1Nm1,D2Nm1u3Nm1,D2Nm1u4Nm1,D2Nm1u0Nm1,D2Nm1u3Nm2,D2Nm1u3N,D2Nm1u1N,D2Nm1u1Nm2] = D21_coeffs(RxL,h,D,nu) ;
+[D20u20,~,~,~,~,~,~,~,~] = D20_coeffs(Kx0,Rx0,h,D,nu) ;
+[D21u21,~,~,~,~,~,~,~,~,~,~,~] = D21_coeffs(Rx0,h,D,nu) ;
+[~,~,~,~,~,~,D22u22,~,~,~,~,~,~] = D22_coeffs ;
+[D2Nu2N,~,~,~,~,~,~,~,~] = D20_coeffs(KxL,RxL,h,D,nu) ;
+[D2Nm1u2Nm1,~,~,~,~,~,~,~,~,~,~,~] = D21_coeffs(RxL,h,D,nu) ;
 
 
 d02 = D22u22*a0;
 d02([1,2,Ny,Ny+1]) = [D20u20, D21u21, D2Nm1u2Nm1, D2Nu2N];
 
 
-[D10u10, D10u20, D10u30, D10u00, D10u11, D10u12, D10u21, D10u01] = D10_coeffs(RLy,Kx0,Rx0,h,D,nu) ;
-[D11u11,D11u12,D11u13,D11u10,D11u01,D11u21,D11u31,D11u22,D11u20,D11u00,D11u02] = D11_coeffs(RLy,Rx0,h,D,nu) ;
-[D12u12,D12u13,D12u14,D12u11,D12u10,D12u02,D12u22,D12u32,D12u23,D12u21,D12u01,D12u03] = D12_coeffs(RLy,h,D,nu) ;
-[D1Nu1N, D1Nu2N, D1Nu3N, D1Nu0N, D1Nu1Nm1, D1Nu1Nm2, D1Nu2Nm1, D1Nu0Nm1] = D10_coeffs(RLy,KxL,RxL,h,D,nu) ;
-[D1Nm1u1Nm1,D1Nm1u1Nm2,D1Nm1u1Nm3,D1Nm1u1N,D1Nm1u0Nm1,D1Nm1u2Nm1,D1Nm1u3Nm1,D1Nm1u2Nm2,D1Nm1u2N,D1Nm1u0N,D1Nm1u0Nm2] = D11_coeffs(RLy,RxL,h,D,nu) ;
+[D10u10, ~, ~, ~, ~, ~, ~, ~] = D10_coeffs(RLy,Kx0,Rx0,h,D,nu) ;
+[D11u11,~,~,~,~,~,~,~,~,~,~] = D11_coeffs(RLy,Rx0,h,D,nu) ;
+[D12u12,~,~,~,~,~,~,~,~,~,~,~] = D12_coeffs(RLy,h,D,nu) ;
+[D1Nu1N, ~, ~, ~, ~, ~, ~, ~] = D10_coeffs(RLy,KxL,RxL,h,D,nu) ;
+[D1Nm1u1Nm1,~,~,~,~,~,~,~,~,~,~] = D11_coeffs(RLy,RxL,h,D,nu) ;
 
 
 d0Mm = D12u12*a0;
 d0Mm([1,2,Ny,Ny+1]) = [D10u10, D11u11, D1Nm1u1Nm1, D1Nu1N];
 
-[D00u00,D00u10,D00u20,D00u01,D00u02,D00u11] = D00_coeffs(KLy,RLy,Kx0,Rx0,h,D,nu) ;
-[D01u01,D01u11,D01u21,D01u00,D01u02,D01u03,D01u12,D01u10] = D01_coeffs(KLy,RLy,Rx0,h,D,nu) ;
-[D02u02,D02u12,D02u22,D02u01,D02u03,D02u04,D02u00,D02u13,D02u11] = D02_coeffs(KLy,RLy,h,D,nu) ;
-[D0Nu0N,D0Nu1N,D0Nu2N,D0Nu0Nm1,D0Nu0Nm2,D0Nu1Nm1] = D00_coeffs(KLy,RLy,KxL,RxL,h,D,nu) ;
-[D0Nm1u0Nm1,D0Nm1u1Nm1,D0Nm1u2Nm1,D0Nm1u0N,D0Nm1u0Nm2,D0Nm1u0Nm3,D0Nm1u1Nm2,D0Nm1u1N] = D01_coeffs(KLy,RLy,RxL,h,D,nu) ;
+[D00u00,~,~,~,~,~] = D00_coeffs(KLy,RLy,Kx0,Rx0,h,D,nu) ;
+[D01u01,~,~,~,~,~,~,~] = D01_coeffs(KLy,RLy,Rx0,h,D,nu) ;
+[D02u02,~,~,~,~,~,~,~,~] = D02_coeffs(KLy,RLy,h,D,nu) ;
+[D0Nu0N,~,~,~,~,~] = D00_coeffs(KLy,RLy,KxL,RxL,h,D,nu) ;
+[D0Nm1u0Nm1,~,~,~,~,~,~,~] = D01_coeffs(KLy,RLy,RxL,h,D,nu) ;
 
 
 d0M = D02u02*a0;
