@@ -1008,22 +1008,22 @@ switch method
         %assert(all((diag(Blk35,0) - dp2Ny2) <= eps), "d0Mm1 incorrect");
 
         %% Zero Padding
-        Dm2Ny = [Dm2Ny; zeros((Nx+1)*2,1)];
+        Dm2Ny = [Dm2Ny; zeros((Ny+1)*2,1)];
 
-        DmNym1 = [DmNym1; zeros((Nx+2),1)];
-        DmNy = [DmNy; zeros((Nx + 1),1)];
-        DmNy1 = [DmNy1; zeros((Nx),1) ];
+        DmNym1 = [DmNym1; zeros((Ny+2),1)];
+        DmNy = [DmNy; zeros((Ny + 1),1)];
+        DmNy1 = [DmNy1; zeros((Ny),1) ];
 
         Dm2 = [Dm2;0;0];
         Dm1 = [Dm1;0];
         D1 = [0;D1];
         D2 = [0;0;D2];
 
-        DNym1 = [zeros((Nx),1);DNym1];
-        DNy = [zeros((Nx+1),1);DNy];
-        DNy1 = [zeros((Nx+2),1);DNy1];
+        DNym1 = [zeros((Ny),1);DNym1];
+        DNy = [zeros((Ny+1),1);DNy];
+        DNy1 = [zeros((Ny+2),1);DNy1];
 
-        D2Ny = [zeros((Nx+1)*2,1);D2Ny];
+        D2Ny = [zeros((Ny+1)*2,1);D2Ny];
         %% diag biharmonic
 
         BHdiags = [Dm2Ny,...
