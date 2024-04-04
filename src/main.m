@@ -1,4 +1,7 @@
-%---- test VK coefficient calc
+%%---- test VK coefficient calc
+% What is This?
+% and what is it meant to do?
+% who wrote it?
 clear all
 close all
 clc
@@ -33,8 +36,8 @@ h       = sqrt(Lx*Ly)*hfrac ;
 ldim    = [Lx Ly Lz] ;
 
 
-[Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",1) ;
-[~,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",1) ;
+[Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,true) ;
+[~,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,true) ;
 zeta = (zetafourth).^(1/4) ;
 
 H = zeros(Ntensor,Ntensor,Ntensor) ;
