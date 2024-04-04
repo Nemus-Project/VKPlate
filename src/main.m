@@ -3,7 +3,8 @@ clear all
 close all
 clc
 
-
+addpath ./magpie
+addpath ./vk_functions
 %------------------------------------------------------------------------
 % custom params
 rho     = 8000 ;
