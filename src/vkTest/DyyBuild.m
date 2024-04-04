@@ -1,6 +1,18 @@
 function Dyy = DyyBuild(Nx,Ny,h,method)
 
 %------------------------------------------------------------------------
+
+if nargin < 4
+    method = 'diag';
+end
+
+%% Validate Arguments
+valid_methods = ["blk", "diag"];
+
+validateattributes(Nx, {'numeric'}, {'integer','positive'});
+validateattributes(Ny, {'numeric'}, {'integer','positive'});
+validateattributes(h,  {'numeric'}, {'real','positive'});
+method = validatestring (method,    valid_methods);
 % Dy
 switch(method)
     case('blk')

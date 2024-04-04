@@ -10,13 +10,8 @@ function Dxx = DxxBuild(Nx,Ny,h,method)
 
 % Parse args
 if nargin < 4
-    if (Nx*Ny) < 1000
-        method = 'blk';
-    else
-        method = 'diag';
-    end
+    method = 'diag';
 end
-
 %% Validate Arguments
 valid_methods = ["blk", "diag"];
 
