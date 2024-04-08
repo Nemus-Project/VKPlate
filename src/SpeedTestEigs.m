@@ -35,43 +35,32 @@ D       = E * Lz^3 / 12 / (1-nu^2) ;
 
 %%
 
-nbpts=150;
-blkt=zeros(nbpts,1);
-olddiagt=zeros(nbpts,1);
-diagt=zeros(nbpts,1);
-nxny=zeros(nbpts,1);
-for n=nbpts:-1:1
-    Nx=10*n;
-    Ny=1000;
-    h=0.01;
-    nxny(n)= Nx*Ny;
-    tic
-    %Dxy=DxyBuild(Nx,Ny,h,'blk');
-    bhmat(BCs,[Nx,Ny],h,Lz,E,nu,'blk');
-    blkt(n)=toc;
+nbpts=1000;
+modes=zeros(nbpts,1);
 
-     tic
-     
-    %Dxy=DxyBuild(Nx,Ny,h,'diag');
-    bhmat(BCs,[Nx,Ny],h,Lz,E,nu,'diag');
-     
-    olddiagt(n)=toc;
+nxny=zeros(nbpts,1);
+ Nx=100;
+ Ny=100;
+ h=0.01;
+
+ biHarm=bhmat(BCs,[Nx,Ny],h,Lz,E,nu,'diag');
+
+for n=nbpts:-1:1
+    nmod(n)= n;
+    tic
+    [~,~] = eigs(biHarm,n,'smallestabs') ;
+    modes(n)=toc;
+
     
 
-    % tic
-    % for ite = 1:20
-    % %Dyy=DyyBuild(Nx,Ny,h,'diag');
-    % bhmat(BCs,[Nx,Ny],h,Lz,E,nu,'diag');
-    % end
-    % diagt(n)=toc;
     disp(n)
 
 
 end
 %%
 figure
-plot(nxny,blkt,nxny,olddiagt,Linewidth=3)
-legend("Block","Diag")
-xlabel("Number of operator points")
+plot(nmod,modes,Linewidth=3)
+%legend("50 modes","100 modes","200 modes")
+xlabel("Number of modes computed")
 ylabel("Time (s)")
 set(gca,'Fontsize',20)
