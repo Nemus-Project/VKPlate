@@ -57,7 +57,7 @@ eta=zeros(Nmodes,1);
 
 qh=zeros(Nmodes,Nmodes,Nmodes);
 %% Initial displacement
-qm(1)=1e-3;
+qm(1)=1e-2;
 %%
 q0=qm;
 
@@ -106,22 +106,20 @@ for n = 2 : Ts
 
     U=(1/(2*E*Lz))*zetafourth(1)*(eta.^2);
     
-    dUdq=-eta*(q0*Hv(1,1,1));
+    dUdq=-eta*q0*Hv(1,1,1);
            
     g=(1/sqrt(2*U+ep))*dUdq;
-    
-    G(n)=g;
     
     Q(n,:)=q0;
 
     QSV(n,:)=q0sv;
     
 
-    %qs=(1/(1+(g^2*k^2)/4))*((2*cos(Om(1)*k))*q0+(((g^2*k^2)/4)-1)*qm-k^2*g*psim1);%Exact integrator
+    qs=(1/(1+(g^2*k^2)/4))*((2*cos(Om(1)*k))*q0+(((g^2*k^2)/4)-1)*qm-k^2*g*psim1);%Exact integrator
     
-    qs=(1/(1+(g^2*k^2)/4)) * ((2-Om(1)^2*k^2)*q0+(((g^2*k^2)/4)-1)*qm-k^2*g*psim1); %SAV but not exact
+    %qs=(1/(1+(g^2*k^2)/4)) * ((2-Om(1)^2*k^2)*q0+(((g^2*k^2)/4)-1)*qm-k^2*g*psim1); %SAV but not exact
 
-    qssv=(2-k^2*Om(1)^2)*q0sv - qmsv + ((Hv(1,1,1)*k^2)/(rho*Lz))*q0sv*etasv ;%Stormer Verlet integrator
+    qssv=(2-k^2*Om(1)^2)*q0 - qm + ((Hv(1,1,1)*k^2)/(rho*Lz))*q0*eta ;%Stormer Verlet integrator
 
     psi0=psim1+0.5*g*(qs-qm);
 
