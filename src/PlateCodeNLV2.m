@@ -1,20 +1,13 @@
 clear all
 close all
 clc
-%%
+%%%
 %--- physical and elastic parameters
 
-load("./Test_NL_Fullclamp_4.mat");
-
-%--- normalisation of the coupling coefficient (useless)
-%Hv=abs(Hv);
-%mHv=max(max(max(Hv)));
-%Hv=10*abs(Hv)/mHv;
-%Hv(abs(Hv)<1e-5)=0;
+load("./Test_NL_Fullclamp_3.mat");
 
 %--- derived parameters (don't change here)
-D       = E * Lz^3 / 12 / (1-nu^2) ;
-k       = (1/44100)/4 ;% Timestep
+k       = (1/44100)/8 ;% Timestep
 T       = 0.1;
 Ts      = floor(T/k) ;% Number of time grid points
 t       =linspace(0,T,Ts);
@@ -27,15 +20,20 @@ for m = 1 : Nmodes
     mdShapes(:,:,m) = reshape(Phi(:,m),[(Ny+1),(Nx+1)]) ;
 
 end
-
-%%
-chi=0.1*sort(1+1*rand(Nmodes,1));
+%Nmodes=3;
+%%%
+%chi=0.1*sort(1+1*rand(Nmodes,1));
 Id=speye(Nmodes);
-Dw2=diag((Om).^2);
-Dw=diag((cos(k*Om)));
-DV0=2*k^(-2)*(Id-diag((cos(k*Om))));
+
+Dw2=diag((Om(1:Nmodes)).^2);
+
+Dw=diag((cos(k*Om(1:Nmodes))));
+
+DV0=2*k^(-2)*(Id-diag((cos(k*Om(1:Nmodes)))));
+
 Ddiag=2*sparse(Dw);
-Dssv=2*Id-(k^2)*Dw2;
+
+D0sv=2*Id-(k^2)*Dw2;
 
 %%
 qm=zeros(Nmodes,1);
@@ -56,16 +54,20 @@ Qsv=zeros(Ts,Nmodes);
 ETA=zeros(Ts,Nmodes);
 %W=zeros(Ny+1,Nx+1,Ts);
 eta=zeros(Nmodes,1);
-etasv=zeros(Nmodes,1);
+%etasv=zeros(Nmodes,1);
 etam=zeros(Nmodes,1);
 qh=zeros(Nmodes,Nmodes,Nmodes);
-%qm=flipud(sort(1*rand(Nmodes,1)));
-qm(1)=0.001;
+%qm=flipud(sort(1e-4*rand(Nmodes,1)));
+qm(1)=1e-3;
 q0=qm;
 
 qmsv=qm;
 q0sv=qmsv;
 
+Q(1,:)=q0;
+Qsv(1,:)=q0sv;
+enerr=1/(rho*Lz);
+%enerr=1;
 %% Initialisation
 
 
@@ -77,66 +79,86 @@ for ki = 1:Nmodes
         end
     end
 end
-
+etasv=eta;
 
 ETA(1,:)=eta;
-U=(1/(2*E*Lz))*zetafourth'*(eta.^2+eta.^2);   %to change with actual energy
+ETASV(1,:)=etasv;
 
-ep=1e-10;
+U=enerr*(1/(2*E*Lz))*zetafourth(1:Nmodes)'*0.5*(eta.^2+eta.^2);   %to change with actual energy (meaning etan-1)
+%U=enerr*(1/(2*E*Lz))*zetafourth(1)*0.5*(eta.^2+eta.^2);
+
+ep=1e-14;
 psim1=sqrt(2*U+ep);
 
 %%
 
 
-w=zeros(Ny+1,Nx+1);
+%w=zeros(Ny+1,Nx+1);
 tic
 for n = 2 : Ts
 
     En(n)=0.5*sum(((q0-qm)/k).^2);
+
     V0(n)=0.5*sum(DV0*q0.*qm);
 
-
-
-
-    etam(:)=0;
     eta(:)=0;
     etasv(:)=0;
-    for ki = 1:Nmodes
-        for ji =1:Nmodes
-            for ii =1:Nmodes
-                etam(ki)=etam(ki)-((E*Lz)/(2*zetafourth(ki)))*Hv(ii,ji,ki)*qm(ii)*qm(ji);
-                eta(ki)=eta(ki)-((E*Lz)/(2*zetafourth(ki)))*Hv(ii,ji,ki)*q0(ii)*q0(ji);
-                %etasv(ki)=etasv(ki)-((E*Lz)/(2*zetafourth(ki)))*Hv(ii,ji,ki)*q0sv(ii)*q0sv(ji);
+    for li = 1:Nmodes
+        for mi =1:Nmodes
+            for ni =1:Nmodes
+                eta(li)=eta(li)-((E*Lz)/(2*zetafourth(li)))*Hv(mi,ni,li)*q0(mi)*q0(ni);
+                etasv(li)=etasv(li)-((E*Lz)/(2*zetafourth(li)))*Hv(mi,ni,li)*q0sv(mi)*q0sv(ni);
 
             end
         end
     end
-
+    
+    ETA(n,:)=eta;
 
     nlsv(:)=0;
+    
     for ki = 1:Nmodes
         for ji =1:Nmodes
             for ii =1:Nmodes
-                nlsv(ki)=nlsv(ki)+Hv(ki,ji,ii)*q0sv(ii)*eta(ji);
+                nlsv(ki)=nlsv(ki)+Hv(ki,ji,ii)*q0sv(ii)*etasv(ji);
+
+
 
             end
         end
     end
+    % for si = 1 : Nmodes
+    %     for ki = 1 : Nmodes
+    %     for li = 1:Nmodes
+    %     for mi =1:Nmodes
+    %         for ni =1:Nmodes
+    % 
+    %             nlsv(si)=nlsv(si)-Hv(li,mi,ni)*Hv(ki,si,li)*q0sv(ki)*q0sv(mi)*q0sv(ni)/(2*zetafourth(li));
+    % 
+    % 
+    %         end
+    %     end
+    %     end
+    %     end
+    % end
 
-    ETA(n,:)=eta;
-    U=(1/(2*E*Lz))*zetafourth'*(eta.^2);
+
+    
+    U=enerr*(1/(2*E*Lz))*zetafourth(1:Nmodes)'*(eta.^2);
+    %U=enerr*(1/(2*E*Lz))*zetafourth(1)*(eta.^2);
+    
 
     dUdq(:)=0;
     for ji = 1:Nmodes
         for ki =1:Nmodes
             for ii =1:Nmodes
-                dUdq(ji)=dUdq(ji)-0.5*eta(ki)*(q0(ii)*Hv(ii,ji,ki));
+                dUdq(ji)=dUdq(ji)-eta(ki)*(q0(ii)*Hv(ii,ji,ki));
 
             end
         end
     end
     %dUdq=-2*dUdq;
-    g=(1/sqrt(2*U+ep))*dUdq;
+    g=enerr*(1/sqrt(2*U+ep))*dUdq;
     G(n)=g(1);
 
     Q(n,:)=q0;
@@ -146,10 +168,13 @@ for n = 2 : Ts
     Dqnp=0.25*(k^2)*g*g'+Id;
     Dqnm=0.25*(k^2)*g*g'-Id;
     Dexp=inv(Dqnp);
-    %Dexp=
+    
     qs=Dexp*(Ddiag*q0+Dqnm*qm-g*(k^2)*psim1);
+    
 
-    qssv=Dssv*q0-qm+((k^2)/(rho*Lz))*nlsv;
+    qssv=D0sv*q0sv-qmsv+((k^2)/(rho*Lz))*nlsv;
+    %qssv=D0sv*q0sv-qmsv+((k^2)*E/(rho))*nlsv;
+
 
 
 
@@ -158,10 +183,10 @@ for n = 2 : Ts
 
 
 
-    w(:,:)=0;
-    for m = 1 : Nmodes
-        w=w+q0(m)*mdShapes(:,:,m);
-    end
+    % w(:,:)=0;
+    % for m = 1 : Nmodes
+    %     w=w+q0(m)*mdShapes(:,:,m);
+    % end
     %W(:,:,n)=w;
     PSI0(n)=psim1;
     qm=q0;
@@ -193,7 +218,7 @@ figure
 plot(t,En-En(3),t,V0-V0(3),t,((PSI0.^2)-(PSI0(3)^2))/2)
 figure
 EN=En+V0+(PSI0.^2)/2;
-plot(t,(EN-EN(150))/EN(150))
+scatter(t,(EN-EN(150))/EN(150),'.')
 xlim([0.02 T])
 %%
 % Fs=44100;
@@ -266,7 +291,13 @@ title('w_k Stormer-Verlet')
 xlabel('Timestep')
 ylabel('Amplitude')
 set(gca,'FontSize',20)
-
+%%
+figure
+plot(Q-Qsv,LineWidth=3)
+title('w_k error')
+xlabel('Timestep')
+ylabel('Amplitude')
+set(gca,'FontSize',20)
 
 %%
 % 
