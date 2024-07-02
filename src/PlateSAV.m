@@ -7,6 +7,7 @@ clc
 load("./Test_NL_Fullclamp_3.mat");
 
 %--- derived parameters (don't change here)
+D       = E * Lz^3 / 12 / (1-nu^2) ;
 k       = (1/44100)/8 ;% Timestep
 T       = 0.1;
 Ts      = floor(T/k) ;% Number of time grid points
@@ -24,6 +25,8 @@ end
 %%%
 %chi=0.1*sort(1+1*rand(Nmodes,1));
 Id=speye(Nmodes);
+
+Dw1=diag((Om(1:Nmodes)));
 
 Dw2=diag((Om(1:Nmodes)).^2);
 
@@ -54,10 +57,12 @@ Qsv=zeros(Ts,Nmodes);
 ETA=zeros(Ts,Nmodes);
 %W=zeros(Ny+1,Nx+1,Ts);
 eta=zeros(Nmodes,1);
-%etasv=zeros(Nmodes,1);
 etam=zeros(Nmodes,1);
 qh=zeros(Nmodes,Nmodes,Nmodes);
 %qm=flipud(sort(1e-4*rand(Nmodes,1)));
+xi=1e-1*Id;
+DSM=(0.5*k*xi*Dw1+Id)^-1;
+Dqmsv=0.5*k*xi*Dw1-Id;
 qm(1)=1e-3;
 q0=qm;
 
@@ -67,7 +72,7 @@ q0sv=qmsv;
 Q(1,:)=q0;
 Qsv(1,:)=q0sv;
 enerr=1/(rho*Lz);
-%enerr=1;
+
 %% Initialisation
 
 
@@ -167,12 +172,22 @@ for n = 2 : Ts
 
     Dqnp=0.25*(k^2)*g*g'+Id;
     Dqnm=0.25*(k^2)*g*g'-Id;
-    Dexp=inv(Dqnp);
-    
-    qs=Dexp*(Ddiag*q0+Dqnm*qm-g*(k^2)*psim1);
+    %Dexp=inv(Dqnp);
+    Dexp=Id-(0.25*(k^2)*g*g')/(1+0.25*k^2*g'*g);
+
+    Dqnm2=0.25*(k^2)*g*g'+0.5*xi*Dw1*k-Id;
+    %Dqnp2=0.25*(k^2)*g*g'+0.5*xi*Dw1*k+Id;
+
+    %Dexp2=inv(Dqnp2);
+    Dexp2=DSM-(DSM*0.25*(k^2)*g*g'*DSM)/(1+0.25*k^2*g'*DSM*g);
+
+    qs=Dexp2*(D0sv*q0+Dqnm2*qm-g*(k^2)*psim1);% +k^2*pext(:,n));
+
+    %qs=Dexp*(Ddiag*q0+Dqnm*qm-g*(k^2)*psim1);%no damping
     
 
-    qssv=D0sv*q0sv-qmsv+((k^2)/(rho*Lz))*nlsv;
+   % qssv=D0sv*q0sv-qmsv+((k^2)/(rho*Lz))*nlsv;%no damping
+    qssv=DSM*(D0sv*q0sv+Dqmsv*qmsv+((k^2)/(rho*Lz))*nlsv);
     %qssv=D0sv*q0sv-qmsv+((k^2)*E/(rho))*nlsv;
 
 
