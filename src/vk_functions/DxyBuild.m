@@ -116,6 +116,9 @@ switch(method)
         dNyp3(1)=-1.0000;
         dNyp3(Ny+2:Ny+1:end)=-0.2500; % Ny+3 diagonal
 
+        d2Ny=zeros((Nx+1)*(Ny+1)-(2*Ny),1);
+        d2Ny(Ny+1)=-0.2500;% 2*Ny diagonal
+        
 
         d2Nyp1=zeros((Nx+1)*(Ny+1)-(2*Ny+1),1);
         d2Nyp1(2:Ny)=0.2500;
@@ -138,37 +141,38 @@ switch(method)
 
 
 
-        % assert(all(diag(Dxy,0)-d0 ==0),'diag 0 is pure man facked')
-        %
+        %  assert(all(diag(Dxy,0)-d0 ==0),'diag 0 is pure man facked')
+        % 
         % assert(all(diag(Dxy,1)-d1 ==0),'diag 1 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,2)-d2 ==0),'diag 2 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,Ny-1)-dNym1 ==0),'diag Ny-1 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,Ny)-dNy ==0),'diag Ny is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,Ny+1)-dNyp1 ==0),'diag Ny+1 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,Ny+2)-dNyp2 ==0),'diag Ny+2 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,Ny+3)-dNyp3 ==0),'diag Ny+3 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,2*Ny+1)-d2Nyp1 ==0),'diag 2*Ny+1 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,2*Ny+2)-d2Nyp2 ==0),'diag 2*Ny+2 is pure man facked')
-        %
+        % 
         % assert(all(diag(Dxy,2*Ny+3)-d2Nyp3 ==0),'diag 2*Ny+3 is pure man facked')
-        %
-        % assert(all(diag(Dxy,2*Ny+4)-d2Nyp4 ==0),'diag 2*Ny+4 is pure man facked')
+        % 
+         % assert(all(diag(Dxy,2*Ny+4)-d2Nyp4 ==0),'diag 2*Ny+4 is pure man facked')
 
 
-        % TO DO ON MONDAY
+       
 
         d=[[flipud(d2Nyp4);zeros(1*(2*Ny+4),1)],...
             [flipud(d2Nyp3);zeros(1*(2*Ny+3),1)],...
             [flipud(d2Nyp2);zeros(1*(2*Ny+2),1)],...
             [flipud(d2Nyp1);zeros(1*(2*Ny+1),1)],...
+            [flipud(d2Ny);zeros(1*(2*Ny),1)],...
             [flipud(dNyp3);zeros(1*(Ny+3),1)],...
             [flipud(dNyp2);zeros(1*(Ny+2),1)],...
             [flipud(dNyp1);zeros(1*(Ny+1),1)],...
@@ -184,6 +188,7 @@ switch(method)
             [zeros(1*(Ny+1),1);dNyp1],...
             [zeros(1*(Ny+2),1);dNyp2],...
             [zeros(1*(Ny+3),1);dNyp3],...
+            [zeros(1*(2*Ny),1);d2Ny],...
             [zeros(1*(2*Ny+1),1);d2Nyp1],...
             [zeros(1*(2*Ny+2),1);d2Nyp2],...
             [zeros(1*(2*Ny+3),1);d2Nyp3],...
@@ -192,17 +197,43 @@ switch(method)
 
 
 
-        dN= [-(2*Ny+4),-(2*Ny+3),-(2*Ny+2),-(2*Ny+1),...
+        dN= [-(2*Ny+4),-(2*Ny+3),-(2*Ny+2),-(2*Ny+1),-(2*Ny),...
             -(Ny+3),-(Ny+2),-(Ny+1),-Ny,-(Ny-1),...
             -2,-1,0,1,2,...
             Ny-1, Ny, Ny+1,Ny+2,Ny+3,...
-            2*Ny+1,2*Ny+2,2*Ny+3,2*Ny+4];
+            2*Ny,2*Ny+1,2*Ny+2,2*Ny+3,2*Ny+4];
 
 
         %
         Dxy= sparse((Nx+1)*(Ny+1),(Nx+1)*(Ny+1)) ;
         Dxy = (1/h^2)*spdiags(d,dN,Dxy);
 
-        %assert(all(all(Dxy-Dxytest ==0)),'Dxytest is pure man facked')
+        % assert(all(diag(Dxy,0)-diag(Dxytest,0) ==0),'diag 0 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,1)-diag(Dxytest,1) ==0),'diag 1 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,2)-diag(Dxytest,2) ==0),'diag 2 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,Ny-1)-diag(Dxytest,Ny-1) ==0),'diag Ny-1 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,Ny)-diag(Dxytest,Ny) ==0),'diag Ny is pure man facked')
+        % 
+        % assert(all(diag(Dxy,Ny+1)-diag(Dxytest,Ny+1) ==0),'diag Ny+1 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,Ny+2)-diag(Dxytest,Ny+2) ==0),'diag Ny+2 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,Ny+3)-diag(Dxytest,Ny+3) ==0),'diag Ny+3 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,2*Ny)-diag(Dxytest,2*Ny) ==0),'diag 2*Ny is pure man facked')
+        % 
+        % assert(all(diag(Dxy,2*Ny+1)-diag(Dxytest,2*Ny+1) ==0),'diag 2*Ny+1 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,2*Ny+2)-diag(Dxytest,2*Ny+2) ==0),'diag 2*Ny+2 is pure man facked')
+        % 
+        % assert(all(diag(Dxy,2*Ny+3)-diag(Dxytest,2*Ny+3) ==0),'diag 2*Ny+3 is pure man facked')
+        % 
+        %  assert(all(diag(Dxy,2*Ny+4)-diag(Dxytest,2*Ny+4) ==0),'diag 2*Ny+4 is pure man facked')
+        % 
+        % assert(all(all(Dxy-Dxytest ==0)),'Dxytest is pure man facked')
 end
 end
