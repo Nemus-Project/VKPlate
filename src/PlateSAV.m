@@ -4,42 +4,62 @@ clc
 %%%
 %--- physical and elastic parameters
 
-load("./Test_NL_Fullclamp_3.mat");
+load("./Test_NL_Fullclamp_3.mat");  % loading parameters
 
 %--- derived parameters (don't change here)
 D       = E * Lz^3 / 12 / (1-nu^2) ;
-k       = (1/44100)/8 ;% Timestep
-T       = 0.1;
-Ts      = floor(T/k) ;% Number of time grid points
-t       =linspace(0,T,Ts);
-x       =linspace(0,Lx,Nx+1);
-y       =linspace(0,Ly,Ny+1);
+k       = (1/44100)/2 ;             % Timestep
+T       = 2;                        % Total time
+Ts      = floor(T/k) ;              % Number of time grid points
+t       =linspace(0,T,Ts);          % Time vector
+x       =linspace(0,Lx,Nx+1);       % x space vector
+y       =linspace(0,Ly,Ny+1);       % y space vector
+
 
 %--- mode reconstruction
+Fext=zeros(1,Ts);
+c0=D/(rho*Lz);
+T0=0.0005;
+Thw=0.0005;
+for n=1:Ts
+    if abs(n*k-T0) <Thw
+        Fext(1,n)=0.5*c0*(1+cos(pi*(n*k-T0)/Thw));
+    end
+end
+figure
+plot(t,Fext)
 
+
+
+
+%colormap('parula') ;
 for m = 1 : Nmodes
     mdShapes(:,:,m) = reshape(Phi(:,m),[(Ny+1),(Nx+1)]) ;
+    %subplot(4,4,m)
+    %mesh(3000*(mdShapes(:,:,m)),(abs(mdShapes(:,:,m))),'FaceColor','texturemap') ;  %axis equal; axis tight ; view(2) ;
+    pext(:,m)=0e-1*Fext*mdShapes(floor(end/4),floor(end/4),m);
 
 end
-%Nmodes=3;
-%%%
-%chi=0.1*sort(1+1*rand(Nmodes,1));
-Id=speye(Nmodes);
-
-Dw1=diag((Om(1:Nmodes)));
-
-Dw2=diag((Om(1:Nmodes)).^2);
-
-Dw=diag((cos(k*Om(1:Nmodes))));
-
-DV0=2*k^(-2)*(Id-diag((cos(k*Om(1:Nmodes)))));
-
-Ddiag=2*sparse(Dw);
-
-D0sv=2*Id-(k^2)*Dw2;
+pext=pext';
 
 %%
-qm=zeros(Nmodes,1);
+%chi=0.1*sort(1+1*rand(Nmodes,1));
+Id=speye(Nmodes);                               % Identity matrix
+
+Dw1=diag((Om(1:Nmodes)));                       % Diagonal matrix of Omega
+
+Dw2=diag((Om(1:Nmodes)).^2);                    % Diagonal matrix of Omega^2
+
+Dw=diag((cos(k*Om(1:Nmodes))));                 % Diagonal for the exact lossless integrator
+
+DV0=2*k^(-2)*(Id-diag((cos(k*Om(1:Nmodes)))));  % 
+
+Ddiag=2*sparse(Dw);                             % 2*Sparse of Dw
+
+D0sv=2*Id-(k^2)*Dw2;                            % 
+
+%%
+qm=zeros(Nmodes,1);                             % 
 q0=zeros(Nmodes,1);
 nlsv=zeros(Nmodes,1);
 
@@ -59,11 +79,11 @@ ETA=zeros(Ts,Nmodes);
 eta=zeros(Nmodes,1);
 etam=zeros(Nmodes,1);
 qh=zeros(Nmodes,Nmodes,Nmodes);
-%qm=flipud(sort(1e-4*rand(Nmodes,1)));
+%qm=flipud(sort(1e-4*rand(Nmodes,1)));      %random excitation
 xi=1e-1*Id;
 DSM=(0.5*k*xi*Dw1+Id)^-1;
 Dqmsv=0.5*k*xi*Dw1-Id;
-qm(1)=1e-3;
+qm(1)=5e-3;
 q0=qm;
 
 qmsv=qm;
@@ -92,7 +112,7 @@ ETASV(1,:)=etasv;
 U=enerr*(1/(2*E*Lz))*zetafourth(1:Nmodes)'*0.5*(eta.^2+eta.^2);   %to change with actual energy (meaning etan-1)
 %U=enerr*(1/(2*E*Lz))*zetafourth(1)*0.5*(eta.^2+eta.^2);
 
-ep=1e-14;
+ep=1e-10;
 psim1=sqrt(2*U+ep);
 
 %%
@@ -117,11 +137,11 @@ for n = 2 : Ts
             end
         end
     end
-    
+
     ETA(n,:)=eta;
 
     nlsv(:)=0;
-    
+
     for ki = 1:Nmodes
         for ji =1:Nmodes
             for ii =1:Nmodes
@@ -137,10 +157,10 @@ for n = 2 : Ts
     %     for li = 1:Nmodes
     %     for mi =1:Nmodes
     %         for ni =1:Nmodes
-    % 
+    %
     %             nlsv(si)=nlsv(si)-Hv(li,mi,ni)*Hv(ki,si,li)*q0sv(ki)*q0sv(mi)*q0sv(ni)/(2*zetafourth(li));
-    % 
-    % 
+    %
+    %
     %         end
     %     end
     %     end
@@ -148,10 +168,10 @@ for n = 2 : Ts
     % end
 
 
-    
+
     U=enerr*(1/(2*E*Lz))*zetafourth(1:Nmodes)'*(eta.^2);
     %U=enerr*(1/(2*E*Lz))*zetafourth(1)*(eta.^2);
-    
+
 
     dUdq(:)=0;
     for ji = 1:Nmodes
@@ -184,9 +204,9 @@ for n = 2 : Ts
     qs=Dexp2*(D0sv*q0+Dqnm2*qm-g*(k^2)*psim1);% +k^2*pext(:,n));
 
     %qs=Dexp*(Ddiag*q0+Dqnm*qm-g*(k^2)*psim1);%no damping
-    
 
-   % qssv=D0sv*q0sv-qmsv+((k^2)/(rho*Lz))*nlsv;%no damping
+
+    % qssv=D0sv*q0sv-qmsv+((k^2)/(rho*Lz))*nlsv;%no damping
     qssv=DSM*(D0sv*q0sv+Dqmsv*qmsv+((k^2)/(rho*Lz))*nlsv);
     %qssv=D0sv*q0sv-qmsv+((k^2)*E/(rho))*nlsv;
 
@@ -315,13 +335,20 @@ ylabel('Amplitude')
 set(gca,'FontSize',20)
 
 %%
-% 
+%
 % figure
 % for anim=2:5:length(t)
 %     surf(W(:,:,anim))
 %     shading interp
 %     zlim([-1000 1000])
 %     pause(0.01)
-% 
+%
 % end
 
+%%
+figure
+plot(PSI0,LineWidth=3)
+title('Psi')
+xlabel('Timestep')
+ylabel('Amplitude')
+set(gca,'FontSize',20)
