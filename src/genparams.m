@@ -16,7 +16,7 @@ nu      = 0.3 ;
 Lz      = 1e-3 ;
 Lx      = 0.6 ;
 Ly      = 2*0.6 ;
-Nmodes  = 100 ;
+Nmodes  = 10 ;
 npts=Nmodes;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(2,2.5,npts));
@@ -382,6 +382,10 @@ set(gca,'FontSize',20)
 % test=sparse(squeeze(test(1,:,:)));
 % figure
 % spy(test)
-%% save parameters
+%% Save parameters
 
-save('Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+if ~exist("../param/", 'dir')
+       mkdir("../param/")
+end
+
+save('../param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
