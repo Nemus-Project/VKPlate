@@ -2,10 +2,10 @@ clear all
 close all
 clc
 
-% PlateSAV is the main code of VKPlate. It calls a parameter file generated
-% by main (temporary name), and use an energy exact scheme to
+% This is the main code of VKPlate. It calls a parameter file generated
+% by genparams.m, and use an energy exact scheme to
 % compute all the modal displacement of a nonlinear plate. It also has a
-% comparison with Stormer-Verlet integration scheme
+% comparison with Stormer-Verlet integration scheme.
 %
 % The input file should include :
 %
