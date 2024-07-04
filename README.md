@@ -30,8 +30,12 @@ Everything is written in ther in a super explicit fashion, I took ages writing i
 
 ## Goals
 
-Energy conservation (which is achieved). Later versions will have means to excite the plate instead of an initial displacement.
+Final checks on SAV, diffent boundary condition, plate under tension
 
 ## References
 
-TBC
+TBA
+
+## Troubleshooting
+
+TBA
