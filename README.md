@@ -44,36 +44,33 @@ At the end the repository directory should look like:
 ```tree
 VKPlate
 ├── README.md
+├── genparams.m
+├── magpie
+├── main.m
 ├── img
-│   └── modeplate.gif
+│   └── ...
 ├── param
-│   ├── Test_NL_Fullclamp_1.mat
-│   ├── Test_NL_Fullclamp_2.mat
-│   ├── Test_NL_Fullclamp_3.mat
-│   ├── Test_NL_Fullclamp_4.mat
-│   ├── Test_NL_Fullclamp_5.mat
-│   └── Test_NL_Fullclamp_6.mat
-├── src
+│   └── ...
+├── private
 │   ├── DxBuild.m
 │   ├── DxxBuild.m
 │   ├── DxyBuild.m
 │   ├── DyBuild.m
 │   ├── DyyBuild.m
-│   ├── eigenMAC.m
 │   ├── eigensign.m
-│   ├── genparams.m
-│   ├── magpie(submodule)
-│   ├── main.m
+│   ├── eigenMAC.m
 │   ├── trapzIntcalc.m
 │   └── vkOperator.m
-└── test    
-    └── *.m
+└── test
+    ├── Hcalc.m
+    ├── ...
+    └── SplitDuffing.m
 ```
 
 
 ### Using main.m
 
-Once the `param/` is populates, run the `src/main.m`.
+Once the `param/` is populates, run the `main.m`.
 
 ## Further Goals
 
