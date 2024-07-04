@@ -2,7 +2,7 @@
 
 ## About
 
-First code generate modal basis with user defined parameters and boundary conditions, second code solves the modal problem and can plot the resulting displacement
+Main code generate modal basis with user defined parameters and boundary conditions, second code solves the modal problem and can plot the resulting displacement
 
 ### Example
 
