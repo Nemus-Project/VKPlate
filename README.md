@@ -1,6 +1,6 @@
 # VKPlate
 
-Implementation of a Föppl-von Karmàn (VK) plate.
+Implementation of a Föppl–von Kármán (VK) plate.
 
 ## About
 
