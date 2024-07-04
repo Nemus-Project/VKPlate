@@ -23,7 +23,7 @@ clc
 %       rho - Density                               | float
 %       nu - Poisson's ratio                        | float
 %       h - Space step                              | float
-%       Lz - Space step                             | float
+%       Lz - Thickness of the plate                 | float
 %       Nmodes  - Number of modes                   | float
 %       Hv - Coupling coeficients                   | Nmodes x Nmodes x Nmodes matrix
 %       Nx - Number of points in the x direction    | float
