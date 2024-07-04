@@ -24,18 +24,47 @@ Alternatively, clone via the [GitHub Desktop](https://github.com/apps/desktop) a
 
 There are some assets that need to be generated or downloaded before the project is useable.
 
-The `main.m` script needs loads a `.mat` file containing a scpecific set of variables. 
+The `main.m` script needs loads a `.mat` file containing a specific set of variables. 
 
 You can either 
 
 1. generate it with `genparams.m` 
 2. download the [`param.zip`](https://github.com/Nemus-Project/VKPlate/releases/download/0.2.0/param.zip)
 
-The contents of `param.zip` should be put in a directory named `param/` at the top level of the repository.
-The `genparams.m` will create this directory by default.
+The contents of `param.zip` should be put in a directory named `param/` at the top level of the repository. The data is quite weighty (~2GB).
+
+The `genparams.m` will create the `param/` directory by default.
 
 At the end the repository directory should look like:
 
+```tree
+.
+├── README.md
+├── img
+│   └── modeplate.gif
+├── param
+│   ├── Test_NL_Fullclamp_1.mat
+│   ├── Test_NL_Fullclamp_2.mat
+│   ├── Test_NL_Fullclamp_3.mat
+│   ├── Test_NL_Fullclamp_4.mat
+│   ├── Test_NL_Fullclamp_5.mat
+│   └── Test_NL_Fullclamp_6.mat
+├── src
+│   ├── DxBuild.m
+│   ├── DxxBuild.m
+│   ├── DxyBuild.m
+│   ├── DyBuild.m
+│   ├── DyyBuild.m
+│   ├── eigenMAC.m
+│   ├── eigensign.m
+│   ├── genparams.m
+│   ├── magpie(submodule)
+│   ├── main.m
+│   ├── trapzIntcalc.m
+│   └── vkOperator.m
+└── test    
+    └── *.m
+```
 
 
 ### Using main.m
@@ -44,11 +73,13 @@ Once the `param/` is populates, run the `src/main.m`.
 
 ### Example Output
 
-![16-mode modal plate doing with initial excitation](./img/modeplate.gif)
+| ![16-mode modal plate doing with initial excitation](./img/modeplate.gif) |
+| :-----------------------------------------------------------------------: |
+|             16-mode modal plate doing with initial excitation             |
 
 ## Further Goals
 
-Final checks on SAV, diffent boundary condition, plate under tension
+Final checks on SAV, different boundary condition, plate under tension
 
 ## References
 
