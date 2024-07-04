@@ -14,13 +14,13 @@ Submodule (Matthew add this)
 
 ### Directory setup
 
-The PlateSAV code needs an input in the form of a .mat file. You can either generate it with main.m and store it in a param folder in the top level of the repository
+The main.m code needs an input in the form of a .mat file. You can either generate it with genparams.m and store it in a param folder in the top level of the repository
 
 OR download the param.zip folder attached to this release (add link) in the top level of the repository and unzip.
 
 Your directory stucture should look like this : (TBA)
 
-### Using PlateSAV.m
+### Using main.m
 
 Everything is written in ther in a super explicit fashion, I took ages writing it, enjoy
 
