@@ -38,7 +38,7 @@ The `genparams.m` will create the `param/` directory by default.
 At the end the repository directory should look like:
 
 ```tree
-.
+VKPlate
 ├── README.md
 ├── img
 │   └── modeplate.gif
