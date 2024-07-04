@@ -6,7 +6,7 @@ clear all
 %close all
 clc
 
-addpath ./magpie
+addpath ./private/magpie
 
 %% ------------------------------------------------------------------------
 % custom params
@@ -384,8 +384,8 @@ set(gca,'FontSize',20)
 % spy(test)
 %% Save parameters
 
-if ~exist("../param/", 'dir')
-       mkdir("../param/")
+if ~exist("./param/", 'dir')
+       mkdir("./param/")
 end
 
-save('../param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+save('./param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
