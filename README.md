@@ -2,6 +2,10 @@
 
 Implementation of a Föppl–von Kármán (VK) plate.
 
+| ![16-mode modal plate doing with initial excitation](./img/modeplate.gif) |
+| :-----------------------------------------------------------------------: |
+|             16-mode modal plate doing with initial excitation             |
+
 ## About
 
 Simulation of a von-Karman plate written in modal formalism, using scalar auxiliary variable (SAV) method.
@@ -70,12 +74,6 @@ VKPlate
 ### Using main.m
 
 Once the `param/` is populates, run the `src/main.m`.
-
-### Example Output
-
-| ![16-mode modal plate doing with initial excitation](./img/modeplate.gif) |
-| :-----------------------------------------------------------------------: |
-|             16-mode modal plate doing with initial excitation             |
 
 ## Further Goals
 
