@@ -72,6 +72,26 @@ VKPlate
 
 Once the `param/` is populates, run the `main.m`.
 
+### Parameter File Format
+
+To avoid needless and time consuming recalculation, the central `main.m` script loads 
+a `.mat` with all the require variables.
+
+| name     | description |
+| -------- | ----------- |
+| `Nmodes` |             |
+| `V`      |             |
+| `freqs`  |             |
+| `Df`     |             |
+| `Lx`     |             |
+| `Ly`     |             |
+| `Nx`     |             |
+| `Ny`     |             |
+| `Lz`     |             |
+| `E`      |             |
+| `rho`    |             |
+| `nu`     |             |
+
 ## Further Goals
 
 Final checks on SAV, different boundary condition, plate under tension
