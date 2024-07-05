@@ -4,7 +4,7 @@ clc
 %%%
 %--- physical and elastic parameters
 
-load("./Test_NL_Fullclamp_3.mat");  % Parameter file
+load("./param/Test_NL_Fullclamp_3.mat");  % Parameter file
 
 %--- derived parameters (don't change here)
 D       = E * Lz^3 / 12 / (1-nu^2) ;

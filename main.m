@@ -72,7 +72,7 @@ end
 
 for m = 1 : Nmodes
     mdShapes(:,:,m) = reshape(Phi(:,m),[(Ny+1),(Nx+1)]) ;
-    pext(:,m)=0e-1*Fext*mdShapes(floor(end/4),floor(end/4),m);
+    pext(:,m)=20*Fext*mdShapes(floor(end/2),floor(end/2),m);
 
 end
 pext=pext';
@@ -137,7 +137,7 @@ Dqmsv=0.5*k*xi*Dw1-Id;                          % Damping term in the Stormer-Ve
 
 %qm=flipud(sort(1e-4*rand(Nmodes,1)));           %random excitation
 
-qm(1)=5e-3;                                     % Initialisation of the displacement at n-1
+qm(1)=0e-3;                                     % Initialisation of the displacement at n-1
 
 q0=qm;                                          % Initialisation of the displacement at n
 
@@ -236,20 +236,16 @@ for n = 2 : Ts
     
     % Timestepping scheme
 
-    qs=Dexp2*(D0sv*q0+Dqnm2*qm-g*(k^2)*psim1);% +k^2*pext(:,n)); %SAV
+    qs=Dexp2*(D0sv*q0+Dqnm2*qm-g*(k^2)*psim1+k^2*pext(:,n));% +k^2*pext(:,n)); %SAV
 
-    qssv=DSM*(D0sv*q0sv+Dqmsv*qmsv+((k^2)/(rho*Lz))*nlsv); %Stormer Verlet
+    qssv=DSM*(D0sv*q0sv+Dqmsv*qmsv+((k^2)/(rho*Lz))*nlsv+k^2*pext(:,n)); %Stormer Verlet
 
     psi0=psim1+0.5*g'*(qs-qm); % Psi time stepping
 
 
 
 
-    % w(:,:)=0;
-    % for m = 1 : Nmodes
-    %     w=w+q0(m)*mdShapes(:,:,m);
-    % end
-    %W(:,:,n)=w;
+ 
 
     % State swap
 
@@ -307,3 +303,5 @@ title('Psi')
 xlabel('Timestep')
 ylabel('Amplitude')
 set(gca,'FontSize',20)
+
+
