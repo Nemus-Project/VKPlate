@@ -21,7 +21,7 @@ Implementation of a Föppl–von Kármán (VK) plate.
 
 ## About
 
-Simulation of a von-Karman plate written in modal formalism, using scalar auxiliary variable (SAV) method.
+Simulation of a von Kármán plate written in modal formalism, using scalar auxiliary variable (SAV) method.
 
 ## Getting started
 
