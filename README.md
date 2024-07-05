@@ -6,6 +6,19 @@ Implementation of a Föppl–von Kármán (VK) plate.
 | :-----------------------------------------------------------------------: |
 |             16-mode modal plate doing with initial excitation             |
 
+- [VKPlate](#vkplate)
+  - [About](#about)
+  - [Getting started](#getting-started)
+    - [Cloning this Repository](#cloning-this-repository)
+    - [Directory setup](#directory-setup)
+    - [Using main.m](#using-mainm)
+    - [Parameter File Format](#parameter-file-format)
+  - [Further Goals](#further-goals)
+  - [References](#references)
+  - [Troubleshooting](#troubleshooting)
+
+
+
 ## About
 
 Simulation of a von-Karman plate written in modal formalism, using scalar auxiliary variable (SAV) method.
@@ -77,20 +90,30 @@ Once the `param/` is populates, run the `main.m`.
 To avoid needless and time consuming recalculation, the central `main.m` script loads 
 a `.mat` with all the require variables.
 
-| name     | description |
-| -------- | ----------- |
-| `Nmodes` |             |
-| `V`      |             |
-| `freqs`  |             |
-| `Df`     |             |
-| `Lx`     |             |
-| `Ly`     |             |
-| `Nx`     |             |
-| `Ny`     |             |
-| `Lz`     |             |
-| `E`      |             |
-| `rho`    |             |
-| `nu`     |             |
+| name         | description |
+| ------------ | ----------- |
+| `rho`        |             |
+| `E`          |             |
+| `nu`         |             |
+| `Lz`         |             |
+| `Lx`         |             |
+| `Ly`         |             |
+| `Nmodes`     |             |
+| `Phi`        |             |
+| `Om`         |             |
+| `Psi`        |             |
+| `Om2`        |             |
+| `Nx`         |             |
+| `Ny`         |             |
+| `h`          |             |
+| `X`          |             |
+| `Y`          |             |
+| `zetafourth` |             |
+| `BCsPhi`     |             |
+| `BCsPsi`     |             |
+| `Hv`         |             |
+
+Use the `genparams.m` script to create the `.mat` files or download from the latest release (See [Directory setup](#directory-setup))
 
 ## Further Goals
 
