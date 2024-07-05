@@ -72,7 +72,7 @@ end
 
 for m = 1 : Nmodes
     mdShapes(:,:,m) = reshape(Phi(:,m),[(Ny+1),(Nx+1)]) ;
-    pext(:,m)=20*Fext*mdShapes(floor(end/2),floor(end/2),m);
+    pext(:,m)=2000*Fext*mdShapes(floor(end/4),floor(end/4),m);
 
 end
 pext=pext';
@@ -304,4 +304,23 @@ xlabel('Timestep')
 ylabel('Amplitude')
 set(gca,'FontSize',20)
 
+%% Plotting the plate
+limplt=max(max(max(abs(Q*10))));
+ds=20; % Desampling factor
+w(:,:)=zeros(Ny+1,Nx+1);
 
+
+figure
+for time= 1:ds:length(t)/2
+   w(:,:)=0;
+    for m = 1 : Nmodes
+        w=w+Q(time,m)*mdShapes(:,:,m);
+    end
+    surf(X,Y,w)
+    xlim([-max(y)/4 3*max(y)/4])
+    ylim([0 max(y)])
+    zlim([-limplt limplt])
+    shading interp
+    pause(0.01)    
+end
+ 
