@@ -111,7 +111,7 @@ a `.mat` with all the require variables.
 | `zetafourth` | Eigenvalues of the stress           |
 | `BCsPhi`     | Displacement boundary conditions    |
 | `BCsPsi`     | Stress boundary condition           |
-| `Hv`         | Coupling coeficients                |
+| `Hv`         | Coupling coefficients                |
 
 Use the `genparams.m` script to create the `.mat` files or download from the latest release (See [Directory setup](#directory-setup))
 
