@@ -90,28 +90,28 @@ Once the `param/` is populates, run the `main.m`.
 To avoid needless and time consuming recalculation, the central `main.m` script loads 
 a `.mat` with all the require variables.
 
-| name         | description |
-| ------------ | ----------- |
-| `rho`        |             |
-| `E`          |             |
-| `nu`         |             |
-| `Lz`         |             |
-| `Lx`         |             |
-| `Ly`         |             |
-| `Nmodes`     |             |
-| `Phi`        |             |
-| `Om`         |             |
-| `Psi`        |             |
-| `Om2`        |             |
-| `Nx`         |             |
-| `Ny`         |             |
-| `h`          |             |
-| `X`          |             |
-| `Y`          |             |
-| `zetafourth` |             |
-| `BCsPhi`     |             |
-| `BCsPsi`     |             |
-| `Hv`         |             |
+| name         | description                         |
+| ------------ | ----------------------------------- |
+| `rho`        | Density                             |
+| `E`          | Young modulus                       |
+| `nu`         | Poisson's ratio                     |
+| `Lz`         | Thickness of the plate              |
+| `Lx`         | x length of the plate               |
+| `Ly`         | y length of the plate               |
+| `Nmodes`     | Number of modes                     |
+| `Phi`        | Eigenvectors of displacement        |
+| `Om`         | Angular frequency of the Phi modes  |
+| `Psi`        | Eigenvectors of stress              |
+| `Om2`        | Angular frequency of the Psi modes  |
+| `Nx`         | Number of points in the x direction |
+| `Ny`         | Number of points in the y direction |
+| `h`          | Space step                          |
+| `X`          | x space                             |
+| `Y`          | y space                             |
+| `zetafourth` | Eigenvalues of the stress           |
+| `BCsPhi`     | Displacement boundary conditions    |
+| `BCsPsi`     | Stress boundary condition           |
+| `Hv`         | Coupling coeficients                |
 
 Use the `genparams.m` script to create the `.mat` files or download from the latest release (See [Directory setup](#directory-setup))
 
