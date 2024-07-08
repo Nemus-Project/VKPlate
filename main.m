@@ -1,7 +1,9 @@
 clear all
 close all
 clc
-
+%%
+colorMap = load('./private/Ha2ColorMap.mat').Ha2ColorMap;
+%%
 % This is the main code of VKPlate. It calls a parameter file generated
 % by genparams.m, and use an energy exact scheme to
 % compute all the modal displacement of a nonlinear plate. It also has a
@@ -306,12 +308,25 @@ set(gca,'FontSize',20)
 
 %% Plotting the plate
 limplt=max(max(max(abs(Q*10))));
-ds=20; % Desampling factor
+ds=10; % Desampling factor
 w(:,:)=zeros(Ny+1,Nx+1);
-
-
+time=1;
 figure
-for time= 1:ds:length(t)/2
+w(:,:)=0;
+    for m = 1 : Nmodes
+        w=w+Q(time,m)*mdShapes(:,:,m);
+    end
+    surf(X,Y,w)
+    xlim([-max(y)/4 3*max(y)/4])
+    ylim([0 max(y)])
+    zlim([-limplt limplt])
+    colormap(colorMap)
+    shading interp
+    %light("Style","local","Position",[-1,0.4,0.02])
+    %material metal; lighting gouraud ;
+gif('VKplateExample.gif');
+
+for time= ds+1:ds:length(t)/20
    w(:,:)=0;
     for m = 1 : Nmodes
         w=w+Q(time,m)*mdShapes(:,:,m);
@@ -320,7 +335,13 @@ for time= 1:ds:length(t)/2
     xlim([-max(y)/4 3*max(y)/4])
     ylim([0 max(y)])
     zlim([-limplt limplt])
+    clim([-limplt/2 limplt/2])
+    colormap(colorMap)
     shading interp
-    pause(0.01)    
+    %light("Style","local","Position",[-10,-10,0])
+    %material metal 
+    %lighting gouraud
+    gif
+    %pause(0.01)    
 end
  

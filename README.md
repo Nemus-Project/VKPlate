@@ -2,7 +2,7 @@
 
 Implementation of a Föppl–von Kármán (VK) plate.
 
-| ![16-mode modal plate doing with initial excitation](./img/modeplate.gif) |
+| ![16-mode modal plate doing with initial excitation](./img/VKplateExample.gif) |
 | :-----------------------------------------------------------------------: |
 |             16-mode modal plate doing with initial excitation             |
 
