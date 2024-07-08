@@ -311,7 +311,7 @@ limplt=max(max(max(abs(Q*10))));
 ds=10; % Desampling factor
 w(:,:)=zeros(Ny+1,Nx+1);
 time=1;
-figure
+figure('Position', [1000 1000 200 200],'Color','w')
 w(:,:)=0;
     for m = 1 : Nmodes
         w=w+Q(time,m)*mdShapes(:,:,m);
