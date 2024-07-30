@@ -15,7 +15,7 @@ nu      = 0.3 ;
 Lz      = 1e-3 ;
 Lx      = 0.05 ;
 Ly      = Lx ;
-Nmodes  = 50 ;
+Nmodes  = 10 ;
 npts=10;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(2,2.7,npts));
@@ -118,7 +118,7 @@ for iter=1:npts
         for p = 1 : Ntensor
             Phip = Phi(:,p);
             %Phipnorm   = trapzIntcalc(Phip.*Phip,h,Nx,Ny) ;
-            for q = 1 : Ntensor
+            for q = p : Ntensor
                 Phiq = Phi(:,q) ; Psiq = Psi(:,q);
 
                 %Phiqnorm   = trapzIntcalc(Phiq.*Phiq,h,Nx,Ny) ;
@@ -129,6 +129,7 @@ for iter=1:npts
                 %LPhipPsiq = vkOperator(Phip,Psiq,Dxy,Dxx,Dyy) ;
 
                 Hv(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);%/sqrt(Psiknorm*Phipnorm*Phiqnorm) ;
+                Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);
                 %Ev(k,p,q) = trapzIntcalc(Phik.*LPhipPsiq,h,Nx,Ny)/sqrt(Phiknorm*Phipnorm*Psiqnorm) ;
 
                 if iter == ite1
