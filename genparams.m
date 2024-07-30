@@ -56,7 +56,7 @@ Ly      = 2*0.6 ;
 
 % Numerical parameters
 Nmodes  = 10 ;
-Nx=500;
+Nx=200;
 
 % Derived values
 Nvec=[100 Nx];
@@ -64,7 +64,7 @@ npts=length(Nvec);
 
 
 % BCs Displacement
-BCsPhi  = [1e15 0e15 ; 1e15 0e15 ; 1e15 0e15 ; 1e15 0e15] ;
+BCsPhi  = [0e15 0e15 ; 0e15 0e15 ; 0e15 0e15 ; 1e15 1e15] ;
 
 %BCs Airy's stress
 BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
@@ -128,11 +128,13 @@ for iter=1:npts
             
             Phip = Phi(:,p);
 
-            for q = 1 : Nmodes
+            for q = p : Nmodes
 
                 Phiq = Phi(:,q) ; Psiq = Psi(:,q);
 
                 LPhipPhiq = vkOperator(Phip,Phiq,Dxy,Dxx,Dyy) ;
+
+                Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);
 
                 Hv(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny); %Coupling coefficient tensor
             end
@@ -150,6 +152,6 @@ if ~exist("./param/", 'dir')
     mkdir("./param/")
 end
 
-filename='parameter_clamped_1';
+filename='parameter_cantilever_1';
 
 save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
