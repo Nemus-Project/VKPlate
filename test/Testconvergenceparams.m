@@ -3,23 +3,22 @@
 % and what is it meant to do?
 % who wrote it?
 clear all
-%close all
+close all
 clc
 
-addpath ./private/magpie
-
+addpath ./private/magpie/
 %% ------------------------------------------------------------------------
 % custom params
 rho     = 8000 ;
 E       = 2e11 ;
 nu      = 0.3 ;
 Lz      = 1e-3 ;
-Lx      = 0.6 ;
-Ly      = 2*0.6 ;
-Nmodes  = 10 ;
-npts=Nmodes;
+Lx      = 0.05 ;
+Ly      = Lx ;
+Nmodes  = 50 ;
+npts=10;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
-Nvec=floor(logspace(2,2.5,npts));
+Nvec=floor(logspace(2,2.7,npts));
 tmagpie2=zeros(npts,1);
 tvk=zeros(npts,1);
 %Nvec=floor(logspace(2,3.2,10));
@@ -30,7 +29,7 @@ tvk=zeros(npts,1);
 %hfrac   = 0.005;   %-- computed as a fraction of sqrt(Lx*Ly)
 
 %BCs Transv
-BCsPhi  = [1e15 0e15 ; 1e15 0e15 ; 1e15 0e15 ; 1e15 0e15] ;
+BCsPhi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 %BCsPhi  = [0 0 ; 0 0 ; 0 0 ; 0 0] ;
 
 %BCs Airy
@@ -174,22 +173,22 @@ for iter=1:npts
     %             mesh(X,Y,3000*(mdShape1),(abs(mdShape1)),'FaceColor','texturemap') ;
     %Emat(k,p,q,:)=Phik.*LPhipPsiq;
     
-    H111(iter)=Hv(ntest,5,5);
-    H121(iter)=Hv(ntest,6,5);
-    H131(iter)=Hv(ntest,7,5);
-    H141(iter)=Hv(ntest,8,5);
-    H211(iter)=Hv(ntest,5,6);
-    H221(iter)=Hv(ntest,6,6);
-    H231(iter)=Hv(ntest,7,6);
-    H241(iter)=Hv(ntest,8,6);
-    H311(iter)=Hv(ntest,5,7);
-    H321(iter)=Hv(ntest,6,7);
-    H331(iter)=Hv(ntest,7,7);
-    H341(iter)=Hv(ntest,8,7);
-    H411(iter)=Hv(ntest,5,8);
-    H421(iter)=Hv(ntest,6,8);
-    H431(iter)=Hv(ntest,7,8);
-    H441(iter)=Hv(ntest,8,8);
+    H111(iter)=Hv(ntest,1,1);
+    H121(iter)=Hv(ntest,2,1);
+    H131(iter)=Hv(ntest,3,1);
+    H141(iter)=Hv(ntest,4,1);
+    H211(iter)=Hv(ntest,1,2);
+    H221(iter)=Hv(ntest,2,2);
+    H231(iter)=Hv(ntest,3,2);
+    H241(iter)=Hv(ntest,4,2);
+    H311(iter)=Hv(ntest,1,3);
+    H321(iter)=Hv(ntest,2,3);
+    H331(iter)=Hv(ntest,3,3);
+    H341(iter)=Hv(ntest,4,3);
+    H411(iter)=Hv(ntest,1,4);
+    H421(iter)=Hv(ntest,2,4);
+    H431(iter)=Hv(ntest,3,4);
+    H441(iter)=Hv(ntest,4,4);
 
     sumH(1,iter)=sum(sum(sum(Hv(1:Nmodes,:,:))));
     
@@ -388,4 +387,4 @@ if ~exist("./param/", 'dir')
        mkdir("./param/")
 end
 
-save('./param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+% save('./param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
