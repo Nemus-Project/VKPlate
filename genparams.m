@@ -51,11 +51,11 @@ E       = 2e11 ;
 rho     = 8000 ; 
 nu      = 0.3 ;
 Lz      = 1e-3 ;
-Lx      = 0.6 ;
-Ly      = 2*0.6 ;
+Lx      = 1 ;
+Ly      = 2*Lx ;
 
 % Numerical parameters
-Nmodes  = 10 ;
+Nmodes  = 20 ;
 Nx=200;
 
 % Derived values
@@ -64,7 +64,7 @@ npts=length(Nvec);
 
 
 % BCs Displacement
-BCsPhi  = [0e15 0e15 ; 0e15 0e15 ; 0e15 0e15 ; 1e15 1e15] ;
+BCsPhi  = [0e15 0e15 ; 0e15 0e15 ; 0e15 0e15 ; 0e15 0e15] ;
 
 %BCs Airy's stress
 BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
@@ -152,6 +152,6 @@ if ~exist("./param/", 'dir')
     mkdir("./param/")
 end
 
-filename='parameter_cantilever_1';
+filename='parameter_Audrey';
 
 save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');

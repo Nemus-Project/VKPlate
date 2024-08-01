@@ -9,14 +9,14 @@ clc
 addpath ./private/magpie/
 %% ------------------------------------------------------------------------
 % custom params
-rho     = 8000 ;
-E       = 2e11 ;
-nu      = 0.3 ;
-Lz      = 1e-3 ;
-Lx      = 0.05 ;
+rho     = 900 ;
+E       = 4.33e+9 ;
+nu      = 0.4 ;
+Lz      = 4e-5 ;
+Lx      = 5e-2 ;
 Ly      = Lx ;
-Nmodes  = 10 ;
-npts=10;
+Nmodes  = 10;
+npts=15;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(2,2.7,npts));
 tmagpie2=zeros(npts,1);
@@ -40,7 +40,7 @@ BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 Ntensor = Nmodes;
 ldim    = [Lx Ly Lz] ;
 %%
-ntest=1;
+ntest=2;
 ktest=ntest;
 ptest=5;
 qtest=2;
@@ -191,7 +191,7 @@ for iter=1:npts
     H431(iter)=Hv(ntest,3,4);
     H441(iter)=Hv(ntest,4,4);
 
-    sumH(1,iter)=sum(sum(sum(Hv(1:Nmodes,:,:))));
+    sumH(1,iter)=sum(sum(sum(abs(Hv(1:Nmodes,:,:)))));
     
     % Hsp=Hv;
     % Hsp(abs(Hv)<1e-1)=0;
@@ -388,4 +388,4 @@ if ~exist("./param/", 'dir')
        mkdir("./param/")
 end
 
-% save('./param/Test_NL_Fullclamp_7.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+%save('./param/PlaqueThèse100modes1.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
