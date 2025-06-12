@@ -14,9 +14,9 @@ E       = 210e+9 ;
 nu      = 0.3 ;
 Lz      = 4e-3 ;
 Lx      = 50e-2 ;
-Ly      = 2*Lx ;
+Ly      = Lx ;
 T       = 0 ;
-Nmodes  =15;
+Nmodes  =4;
 npts=10;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(1.5,2.2,npts));
@@ -63,8 +63,21 @@ for iter=1:10%npts
 
 
     Nxy1=Nvec(iter);
+    
+    [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;%calls magpie
 
-    [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;
+    [Phiort,OrtN]=GramSchmidt(Phi); %orthogonalise the basis of phi
+
+    for nQ = 1 : Nmodes % normalize the basis
+        Phitemp   = Phiort(:,nQ) ;
+        Phinorm   = trapzIntcalc(Phitemp.*Phitemp,h,Nx,Ny) ;
+        Phitemp   = Phitemp / sqrt(Phinorm) ;
+        Phi(:,nQ) = Phitemp ;
+    end
+    clear Phitemp
+ 
+
+
     if iter ==1
         Phiref=Phi;
         Nxref=Nx;
@@ -84,6 +97,18 @@ for iter=1:10%npts
     Nxy2=Nx*Ny;
 
     [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Nmodes,"none",true) ;
+
+    [Psiort,OrtN]=GramSchmidt(Psi); %orthogonalise the basis of phi
+
+    for nQ = 1 : Nmodes % normalize the basis
+        Psitemp   = Psiort(:,nQ) ;
+        Psinorm   = trapzIntcalc(Psitemp.*Psitemp,h,Nx,Ny) ;
+        Psitemp   = Psitemp / sqrt(Psinorm) ;
+        Psi(:,nQ) = Psitemp ;
+    end
+    clear Phitemp
+
+
      if iter ==1
         Psiref=Psi;
     else
@@ -396,27 +421,29 @@ for i=1:Nmodes
 end
 figure
 imagesc(Orthog)
+title("Phi")
 colormap(flipud(gray))
 %% Phitest
-Phitest=randn(size(Phi));
-
-for i=1:Nmodes
-    for j=1:Nmodes
-        tem=Phitest(:,i)'*Phitest(:,j);
-        if abs(tem)<1e-5
-            tem=0;
-        else
-            tem=1;
-        end
-        Orthog(i,j)=tem;
-    end
-end
-figure
-imagesc(Orthog)
-colorbar
-colormap(flipud(gray))
+% Phitest=randn(size(Phi));
+% 
+% for i=1:Nmodes
+%     for j=1:Nmodes
+%         tem=Phitest(:,i)'*Phitest(:,j);
+%         if abs(tem)<1e-5
+%             tem=0;
+%         else
+%             tem=1;
+%         end
+%         Orthog(i,j)=tem;
+%     end
+% end
+% figure
+% imagesc(Orthog)
+% title("Phi random")
+% colorbar
+% colormap(flipud(gray))
 %% Orth
-Phiort=GramSchmidt(Phi,Nmodes);
+[Phiort,OrtN]=GramSchmidt(Phi);
 Orthog=zeros(Nmodes);
 for i=1:Nmodes
     for j=1:Nmodes
@@ -432,10 +459,11 @@ end
 
 figure
 imagesc(Orthog)
+title("post GS")
 colorbar
 colormap(flipud(gray))
 %%
-mdShape = reshape(Phiort(:,8),[(Ny+1),(Nx+1)]);
+mdShape = reshape(Phiort(:,3),[(Ny+1),(Nx+1)]);
 
 figure
 pcolor(X,Y,3000*(mdShape));
