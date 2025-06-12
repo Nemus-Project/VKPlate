@@ -6,9 +6,7 @@ clear all
 %close all
 clc
 
-addpath ./magpie
-addpath ./vk_functions
-addpath ./param
+
 %% ------------------------------------------------------------------------
 % custom params
 rho     = 8000 ;
@@ -17,10 +15,11 @@ nu      = 0.3 ;
 Lz      = 1e-3 ;
 Lx      = 0.6 ;
 Ly      = 0.6 ;
-Nmodes  = 10 ;
+T       = 0 ;
+Nmodes  = 50 ;
 npts=2;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
-Nvec=floor(logspace(2,3,npts));
+Nvec=floor(logspace(1,2,npts));
 
 %Nvec=floor(logspace(2,3.2,10));
 %Nvec=[1000:100:2000];
@@ -56,11 +55,12 @@ hvec(iter)=h;
 
 Nxy1=Nvec(iter)^2;
 
-[Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",false) ;
+[Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;
+
 
 Nxy2=Nx*Ny;
 tic;
-[Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",false) ;
+[Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Nmodes,"none",true) ;
 
 disp(iter)
 assert((Nxy1-Nxy2 ==0),'Nxy pure man facked')
@@ -102,10 +102,10 @@ end
 
 %end
 %%
-path = '/Users/alexis/Documents/MATLAB/VKPlate/src/param/';
-filename = 'NLParameters10modes.mat';
-
-save([path filename],'rho','E','nu','Lx','Ly','Lz','Nmodes','Nx','Ny','h','BCsPhi','BCsPsi','Om','Phi','Om2','Psi','zeta','Hv')
+% path = '/Users/alexis/Documents/MATLAB/VKPlate/src/param/';
+% filename = 'NLParameters10modes.mat';
+% 
+% save([path filename],'rho','E','nu','Lx','Ly','Lz','Nmodes','Nx','Ny','h','BCsPhi','BCsPsi','Om','Phi','Om2','Psi','zeta','Hv')
 %%
 
 
