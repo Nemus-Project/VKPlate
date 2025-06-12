@@ -40,6 +40,9 @@ clc
 % the 'param' folder, for later use by the 'main.m' code.
 
 
+%% Adding path to the submodule magpie
+
+addpath ./private/magpie
 
 %% Variable declaration
 
@@ -67,16 +70,16 @@ T       = 0%2;%2;
 % T       = 0*D;
 
 % Numerical parameters
+Nmodes  = 60 ;
+Nx=300;
 
-Nx=7;
-Nmodes  = Nx ;
 % Derived values
-Nvec=[5 Nx];
+Nvec=[200 Nx];
 npts=length(Nvec);
 
 
 % BCs Displacement
-BCsPhi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
+BCsPhi  = [1e15 0e15 ; 1e15 0e15 ; 1e15 0e15 ; 1e15 0e15] ;
 
 %BCs Airy's stress
 BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
@@ -127,47 +130,48 @@ for iter=1:npts
 
     Ev = zeros(Nmodes,Nmodes,Nmodes) ;
 
-    Dxx = DxxBuild(Nx,Ny,h) ;
-    Dyy = DyyBuild(Nx,Ny,h) ;
-    Dxy = DxyBuild(Nx,Ny,h) ;
-
     tic;
-    for k = 1 : Nmodes
-
-        Phik = Phi(:,k) ; Psik = Psi(:,k) ;
-
-        for p = 1 : Nmodes
-            
-            Phip = Phi(:,p);
-
-            for q = p : Nmodes
-
-                Phiq = Phi(:,q) ; Psiq = Psi(:,q);
-
-                LPhipPhiq = vkOperator(Phip,Phiq,Dxy,Dxx,Dyy) ;
-
-                %norm_k = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
-                
-                Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);
-
-                Hv(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny); %Coupling coefficient tensor
-            end
-        end
-    end
+   
 end
 %% Defining the numerical space
 xax = (0:Nx)*h ;
 yax = (0:Ny)*h ;
 [X,Y] = meshgrid(xax,yax) ;
 
-%% Save parameters
-
-if ~exist("./param/", 'dir')
-    mkdir("./param/")
+%%
+clear Omana OMana
+mmax=20;
+nmax=20;
+for m=1:mmax
+    for n=1:nmax
+    OMana(m,n)=sqrt(D/(rho*Lz))*((m*pi/Lx)^2+(n*pi/Ly)^2);
+    end
 end
+Omana(:)=reshape(OMana,[mmax*nmax,1]);
 
-filename='Test1modev2';
+Omana=sort(Omana);
 
-%save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 
-Om(1)./(2*pi)
+%% Figure
+Omplt=linspace(1,60,Nmodes);
+
+figure
+stem(Omplt,Omana(1:Nmodes)/2*pi,"LineWidth",4,"MarkerSize",10,"Marker","x")
+hold on
+plot(Omplt,Om/2*pi,"Marker","o","MarkerSize",15,"LineWidth",4)
+xlabel("Mode number")
+ylabel("Frequency (Hz)")
+legend("Analytical","Numerical")
+
+set(gca,"FontSize",30)
+
+
+%%
+ero=abs(Omana(1:Nmodes)'-Om(:))./(2*pi*Omana(1:Nmodes)');
+
+figure
+plot(Omplt,ero,"Marker","o","MarkerSize",15,"LineWidth",4)
+xlabel("Mode number")
+ylabel("Relative error")
+set(gca,"FontSize",30)
+

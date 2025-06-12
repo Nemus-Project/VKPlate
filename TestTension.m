@@ -40,6 +40,9 @@ clc
 % the 'param' folder, for later use by the 'main.m' code.
 
 
+%% Adding path to the submodule magpie
+
+addpath ./private/magpie
 
 %% Variable declaration
 
@@ -49,12 +52,15 @@ clc
 E       = 4e+9 ;
 rho     = 900 ; 
 nu      = 0.4 ;
-Lz      = 8e-5 ;
+Lz      = 4e-5 ;
 Lx      = 4.3e-2 ;
 Ly      = Lx;
 D       = E * Lz^3 / 12 / (1-nu^2);
 sigma   = rho*Lz;
-T       = 0%2;%2;
+Tvec       = [0:8]*0.01;
+freqshift=zeros(9,1)
+for iter = 1:9
+T       = Tvec(iter)/sigma
 
 
 % E       =  200000000000.0 ;
@@ -67,11 +73,11 @@ T       = 0%2;%2;
 % T       = 0*D;
 
 % Numerical parameters
+Nmodes  = 5 ;
+Nx=400;
 
-Nx=7;
-Nmodes  = Nx ;
 % Derived values
-Nvec=[5 Nx];
+Nvec=[100 Nx];
 npts=length(Nvec);
 
 
@@ -160,14 +166,17 @@ xax = (0:Nx)*h ;
 yax = (0:Ny)*h ;
 [X,Y] = meshgrid(xax,yax) ;
 
-%% Save parameters
+% %% Save parameters
+% 
+% if ~exist("./param/", 'dir')
+%     mkdir("./param/")
+% end
+% 
+% filename='Purple20modes';
+% 
+% save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 
-if ~exist("./param/", 'dir')
-    mkdir("./param/")
+freqshift(iter)=Om(1)./(2*pi)
 end
-
-filename='Test1modev2';
-
-%save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
-
-Om(1)./(2*pi)
+figure
+plot(Tvec,freqshift)

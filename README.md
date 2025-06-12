@@ -121,7 +121,7 @@ Final checks on SAV, different boundary condition, plate under tension
 
 ## References
 
-see [`./references.md`](./references.md)
+TBA
 
 ## Troubleshooting
 

@@ -39,7 +39,7 @@ for n = 1 : Nmodes
     MacMat(n,n)=0;
 end
 
-[row,col]=find(MacMat)
+[row,col]=find(MacMat);
 lmc=length(col);
 %lis=[row,col];
 if lmc~=0
@@ -50,7 +50,7 @@ for loo= 1:lmc-1
 
         QMAC(:,[col(loo),row(loo)])=QMAC(:,[row(loo),col(loo)]);
         OmMAC([col(loo),row(loo)])=OmMAC([row(loo),col(loo)]);
-        check=row(loo)
+        check=row(loo);
     end
 end
 
