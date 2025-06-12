@@ -6,8 +6,7 @@ clear all
 close all
 clc
 
-%addpath ./private/magpie/
-%addpath '/Users/alexis/Documents/MATLAB/VKPlate/private/magpie'
+
 %% ------------------------------------------------------------------------
 % custom params
 rho     = 7850 ;
