@@ -48,7 +48,7 @@ shouldplotspectro = false; % Plot the spectrogram if true
 shouldanimate = false ; % Make a gif of the plate if true
 
 %% Declared parameters
-nos=10; %number of oversampling iterations
+nos=2; %number of oversampling iterations
 osmin=1;
 osmax=2;
 OS=floor(logspace(osmin,osmax,nos)) ;
@@ -202,7 +202,9 @@ for n = 2 : Ts
 
     En(n)=0.5*sum(((q0-qm)/k).^2);  %Kinetic energy at timestep n
 
-    V0(n)=0.5*sum(DV0*q0.*qm);      %Linear potential energy at timestep n
+    V0(n)=0.5*sum(DV0*q0.*qm);      %Linear potential energy at timestep n no losses
+
+    %V0(n) = 0.5*Omt2*(0.5*(q0+qm)).^2;    % New linear potential for lossy cases
 
     eta(:)=0;
 
@@ -270,7 +272,7 @@ for n = 2 : Ts
 
     %qs=DexpLne*(Dq0Lne*q0+DqmLne*qm-g*(k^2)*psim1+k^2*pext(:,n)); %SAV lossy non exact 
 
-    %qs=DexpL*(Dq0L*q0+DqmL*qm-g*(k^2)*psim1); %SAV exactlossy (not working yet)
+    %qs=DexpL*(Dq0L*q0+DqmL*qm-g*(k^2)*psim1); %SAV exactlossy 
 
     qs=Dexp*(Ddiag*q0+Dqnm*qm-g*(k^2)*psim1); % SAV exactlossless
     
