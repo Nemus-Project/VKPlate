@@ -6,19 +6,21 @@ clear all
 close all
 clc
 
-addpath ./private/magpie/
+%addpath ./private/magpie/
+%addpath '/Users/alexis/Documents/MATLAB/VKPlate/private/magpie'
 %% ------------------------------------------------------------------------
 % custom params
-rho     = 900 ;
-E       = 4.33e+9 ;
-nu      = 0.4 ;
-Lz      = 4e-5 ;
-Lx      = 5e-2 ;
-Ly      = Lx ;
-Nmodes  = 10;
-npts=15;
+rho     = 7850 ;
+E       = 210e+9 ;
+nu      = 0.3 ;
+Lz      = 4e-3 ;
+Lx      = 50e-2 ;
+Ly      = 2*Lx ;
+T       = 0 ;
+Nmodes  =15;
+npts=10;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
-Nvec=floor(logspace(2,2.7,npts));
+Nvec=floor(logspace(1.5,2.2,npts));
 tmagpie2=zeros(npts,1);
 tvk=zeros(npts,1);
 %Nvec=floor(logspace(2,3.2,10));
@@ -40,16 +42,16 @@ BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 Ntensor = Nmodes;
 ldim    = [Lx Ly Lz] ;
 %%
-ntest=2;
+ntest=1;
 ktest=ntest;
-ptest=5;
-qtest=2;
+ptest=2;
+qtest=3;
 ltest=1;
 mtest=1;
 ite1=2;
 ite2=1;
 figure
-for iter=1:npts
+for iter=1:10%npts
     %------------------------------------------------------------------------
 
     %tic
@@ -63,7 +65,7 @@ for iter=1:npts
 
     Nxy1=Nvec(iter);
 
-    [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",false) ;
+    [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;
     if iter ==1
         Phiref=Phi;
         Nxref=Nx;
@@ -75,14 +77,14 @@ for iter=1:npts
 
         %[Phi,Om] = eigenMAC(Phiref,Nxref,Nyref,Phi,Nx,Ny,h,Nmodes,Lx,Ly,Om);
         
-         Phi = eigensign(Phiref,Nxref,Nyref,Phi,Nx,Ny,h,Nmodes,Lx,Ly);
+         Phi = eigensign(Phiref,Nxref,Nyref,Phi,Nx,Ny,T,Nmodes,Lx,Ly);
         %Phiref=Phi;
         
     end
 
     Nxy2=Nx*Ny;
 
-    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",false) ;
+    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Nmodes,"none",true) ;
      if iter ==1
         Psiref=Psi;
     else
@@ -117,7 +119,7 @@ for iter=1:npts
         %Psiknorm   = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
         for p = 1 : Ntensor
             Phip = Phi(:,p);
-            %Phipnorm   = trapzIntcalc(Phip.*Phip,h,Nx,Ny) ;
+            Phipnorm   = trapzIntcalc(Phip.*Phip,h,Nx,Ny) ;
             for q = p : Ntensor
                 Phiq = Phi(:,q) ; Psiq = Psi(:,q);
 
@@ -129,14 +131,19 @@ for iter=1:npts
                 %LPhipPsiq = vkOperator(Phip,Psiq,Dxy,Dxx,Dyy) ;
 
                 Hv(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);%/sqrt(Psiknorm*Phipnorm*Phiqnorm) ;
-                Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);
+                %Hv(p,k,q) = Hv(k,p,q);
+                %Hv(k,q,p) =  Hv(k,p,q);
+                Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);%/sqrt(Psiknorm*Phipnorm*Phiqnorm);
                 %Ev(k,p,q) = trapzIntcalc(Phik.*LPhipPsiq,h,Nx,Ny)/sqrt(Phiknorm*Phipnorm*Psiqnorm) ;
 
                 if iter == ite1
 
                     if k==ktest
+                        
                         if p==ptest
+                            
                             if q==qtest
+                                
 
                                 %Hmat=Psik.*LPhipPhiq;
                                 Hmat=Phip;
@@ -146,9 +153,10 @@ for iter=1:npts
                                 [X,Y] = meshgrid(xax,yax) ;
 
 
-                                % subplot(3,3,ite2)
-                                % pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
-                                % shading interp
+                                subplot(3,3,ite2)
+                                %figure
+                                pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
+                                 shading interp
                                 if ite1 <17 
                                     ite1=ite1+1;
                                     ite2=ite2+1;
@@ -193,25 +201,25 @@ for iter=1:npts
 
     sumH(1,iter)=sum(sum(sum(abs(Hv(1:Nmodes,:,:)))));
     
-    % Hsp=Hv;
-    % Hsp(abs(Hv)<1e-1)=0;
-    % switch iter
-    %     case 10
-    %         Hsp10=Hsp;
-    %     case 9
-    %         Hsp9=Hsp;
-    %     case 8
-    %         Hsp8=Hsp;
-    %     case 7
-    %         Hsp7=Hsp;
-    % 
-    %     case 6
-    %         Hsp6=Hsp;
-    % 
-    % 
-    % end
+    Hsp=Hv;
+    Hsp(abs(Hv)<1e-1)=0;
+    switch iter
+        case 10
+            Hsp10=Hsp;
+        case 9
+            Hsp9=Hsp;
+        case 8
+            Hsp8=Hsp;
+        case 7
+            Hsp7=Hsp;
+
+        case 6
+            Hsp6=Hsp;
+
+
+    end
     
-    %clear Hv
+    clear Hv
     %toc
     %nvec(iter)=Nx*Ny;
 
@@ -338,43 +346,86 @@ set(gca,'FontSize',20)
 
 %%
 figure
-% subplot(2,2,1)
+ % subplot(2,2,1)
 semilogx(hvec,sumH(1,:),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^1_{i,j}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 % 
-% subplot(2,2,2)
-% semilogx(hvec,sumH(11,:),LineWidth=3,Marker="o")
-% xlabel('h')
-% ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^2_{i,j}'])
-% set (gca,'xdir','reverse')
-% set(gca,'FontSize',20)
-% 
-% subplot(2,2,3)
-% semilogx(hvec,sumH(12,:),LineWidth=3,Marker="o")
-% xlabel('h')
-% ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^3_{i,j}'])
-% set (gca,'xdir','reverse')
-% set(gca,'FontSize',20)
-% 
-% subplot(2,2,4)
-% semilogx(hvec,sumH(13,:),LineWidth=3,Marker="o")
-% xlabel('h')
-% ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^4_{i,j}'])
-% set (gca,'xdir','reverse')
-% set(gca,'FontSize',20)
+% % subplot(2,2,2)
+% % semilogx(hvec,sumH(11,:),LineWidth=3,Marker="o")
+% % xlabel('h')
+% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^2_{i,j}'])
+% % set (gca,'xdir','reverse')
+% % set(gca,'FontSize',20)
+% % 
+% % subplot(2,2,3)
+% % semilogx(hvec,sumH(12,:),LineWidth=3,Marker="o")
+% % xlabel('h')
+% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^3_{i,j}'])
+% % set (gca,'xdir','reverse')
+% % set(gca,'FontSize',20)
+% % 
+% % subplot(2,2,4)
+% % semilogx(hvec,sumH(13,:),LineWidth=3,Marker="o")
+% % xlabel('h')
+% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^4_{i,j}'])
+% % set (gca,'xdir','reverse')
+% % set(gca,'FontSize',20)
 
 %%
-% Htest=sparse(squeeze(Hsp9(10,:,:)))
-% figure
-% spy(Htest)
-% title('Non zero H^{10}_{i,j} coefficients for fully free plate')
-% xlabel('i modes')
-% ylabel('j modes')
-% set(gca,'FontSize',20)
+Htest=sparse(squeeze(Hsp9(1,:,:)))
+figure
+spy(Htest)
+title('Non zero H^{1}_{i,j} coefficients for fully free plate')
+xlabel('i modes')
+ylabel('j modes')
+set(gca,'FontSize',20)
+%% Orthomap
+Orthog=zeros(Nmodes);
+for i=1:Nmodes
+    for j=1:Nmodes
+        tem=Phi(:,i)'*Phi(:,j);
+        if abs(tem)<1e-5
+            tem=0;
+        else
+            tem=1;
+        end
+        Orthog(i,j)=tem;
+    end
+end
+figure
+imagesc(Orthog)
+colormap(flipud(gray))
 %%
+Phiort=GramSchmidt(Phi,Nmodes);
+Orthog=zeros(Nmodes);
+for i=1:Nmodes
+    for j=1:Nmodes
+        tem=Phiort(:,i)'*Phiort(:,j);
+        if abs(tem)<1e-5
+            tem=0;
+        else
+            tem=1;
+        end
+        Orthog(i,j)=tem;
+    end
+end
+
+figure
+imagesc(Orthog)
+colorbar
+colormap(flipud(gray))
+%%
+mdShape = reshape(Phiort(:,8),[(Ny+1),(Nx+1)]);
+
+figure
+pcolor(X,Y,3000*(mdShape));
+shading interp
+%%
+
+
 
 % test=Hsp10-Hsp9;
 % test(abs(test)<1e2)=0;
