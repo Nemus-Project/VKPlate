@@ -1,3 +1,6 @@
 [submodule "src/magpie"]
 	path = private/magpie
 	url = https://github.com/Nemus-Project/magpie-matlab.git
+[submodule "private/magpie"]
+	path = private/magpie
+	url = https://github.com/Nemus-Project/magpie-matlab
