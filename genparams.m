@@ -40,9 +40,6 @@ clc
 % the 'param' folder, for later use by the 'main.m' code.
 
 
-%% Adding path to the submodule magpie
-
-addpath ./private/magpie
 
 %% Variable declaration
 
