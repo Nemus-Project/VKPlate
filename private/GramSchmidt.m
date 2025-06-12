@@ -1,20 +1,18 @@
-function [PhiGS] = GramSchmidt(Phi,Nmodes)
-
-PhiGS=zeros(length(Phi),Nmodes)
-PhiGS(:,1)=Phi(:,1);
-add=zeros(length(Phi),1);
-for i= 2:Nmodes
-
-   %preproj= preproj+;
-    for j =1:i-1
-        add=add+(dot(PhiGS(:,j),Phi(:,i))/(dot(PhiGS(:,j),PhiGS(:,j))))*PhiGS(:,j);
+function [Q, R] = GramSchmidt(X)
+% Modified Gram-Schmidt orthonormalization (numerical stable version of Gram-Schmidt algorithm) 
+% which produces the same result as [Q,R]=qr(X,0)
+% Written by Mo Chen (sth4nth@gmail.com).
+[d,n] = size(X);
+m = min(d,n);
+R = zeros(m,n);
+Q = zeros(d,m);
+for i = 1:m
+    v = X(:,i);
+    for j = 1:i-1
+        R(j,i) = Q(:,j)'*v;
+        v = v-R(j,i)*Q(:,j);
     end
-
-   PhiGS(:,i)=Phi(:,i)-add;
-
+    R(i,i) = norm(v);
+    Q(:,i) = v/R(i,i);
 end
-
-% for i= 2:Nmodes
-%     R = norm(PhiGS(:,i));
-%   PhiGS(:,i)=PhiGS(:,i)/R
-% end
+R(:,m+1:n) = Q'*X(:,m+1:n);
