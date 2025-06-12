@@ -397,7 +397,25 @@ end
 figure
 imagesc(Orthog)
 colormap(flipud(gray))
-%%
+%% Phitest
+Phitest=randn(size(Phi));
+
+for i=1:Nmodes
+    for j=1:Nmodes
+        tem=Phitest(:,i)'*Phitest(:,j);
+        if abs(tem)<1e-5
+            tem=0;
+        else
+            tem=1;
+        end
+        Orthog(i,j)=tem;
+    end
+end
+figure
+imagesc(Orthog)
+colorbar
+colormap(flipud(gray))
+%% Orth
 Phiort=GramSchmidt(Phi,Nmodes);
 Orthog=zeros(Nmodes);
 for i=1:Nmodes
