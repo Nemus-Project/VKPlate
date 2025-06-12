@@ -47,24 +47,39 @@ addpath ./private/magpie
 %% Variable declaration
 
 % Physical parameters
-E       = 2e11 ;
-rho     = 8000 ; 
-nu      = 0.3 ;
-Lz      = 1e-3 ;
-Lx      = 1 ;
-Ly      = 2*Lx ;
+
+
+E       = 4e+9 ;
+rho     = 900 ; 
+nu      = 0.4 ;
+Lz      = 8e-5 ;
+Lx      = 4.3e-2 ;
+Ly      = Lx;
+D       = E * Lz^3 / 12 / (1-nu^2);
+sigma   = rho*Lz;
+T       = 0%2;%2;
+
+
+% E       =  200000000000.0 ;
+% rho     = 8000 ; 
+% nu      = 0.3 ;
+% Lz      = 0.001 ;
+% Lx      =  0.2 ;
+% Ly      = 0.4 ;
+% D       = E * Lz^3 / 12 / (1-nu^2);
+% T       = 0*D;
 
 % Numerical parameters
-Nmodes  = 20 ;
-Nx=200;
 
+Nx=7;
+Nmodes  = Nx ;
 % Derived values
-Nvec=[100 Nx];
+Nvec=[5 Nx];
 npts=length(Nvec);
 
 
 % BCs Displacement
-BCsPhi  = [0e15 0e15 ; 0e15 0e15 ; 0e15 0e15 ; 0e15 0e15] ;
+BCsPhi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 
 %BCs Airy's stress
 BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
@@ -77,7 +92,7 @@ for iter=1:npts
 
     h=Lx/Nvec(iter); % Defining h
 
-    [Om,Phi,Nx,Ny,~,~] = magpie(rho,E,nu,ldim,h,BCsPhi,Nmodes,"none",true) ; % see magpie doc
+    [Om,Phi,Nx,Ny,~,~] = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ; % see magpie doc
 
     if iter ==1
 
@@ -93,7 +108,7 @@ for iter=1:npts
 
     end
 
-    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,ldim,h,BCsPsi,Nmodes,"none",false) ;% see magpie doc
+    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Nmodes,"none",true) ;% see magpie doc
 
     if iter ==1
 
@@ -134,6 +149,8 @@ for iter=1:npts
 
                 LPhipPhiq = vkOperator(Phip,Phiq,Dxy,Dxx,Dyy) ;
 
+                %norm_k = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
+                
                 Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);
 
                 Hv(k,p,q) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny); %Coupling coefficient tensor
@@ -152,6 +169,8 @@ if ~exist("./param/", 'dir')
     mkdir("./param/")
 end
 
-filename='parameter_Audrey';
+filename='Test1modev2';
 
-save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+%save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+
+Om(1)./(2*pi)
