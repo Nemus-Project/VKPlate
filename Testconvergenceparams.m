@@ -5,6 +5,7 @@
 clear all
 close all
 clc
+colorMap = load('Ha3ColorMap.mat').custom_map;
 
 
 %% ------------------------------------------------------------------------
@@ -13,10 +14,10 @@ rho     = 7850 ;
 E       = 210e+9 ;
 nu      = 0.3 ;
 Lz      = 4e-3 ;
-Lx      = 50e-2 ;
+Lx      = 100e-2 ;
 Ly      = Lx ;
 T       = 0 ;
-Nmodes  =4;
+Nmodes  =7;
 npts=10;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(1.5,2.2,npts));
@@ -41,7 +42,7 @@ BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 Ntensor = Nmodes;
 ldim    = [Lx Ly Lz] ;
 %%
-ntest=1;
+ntest=2;
 ktest=ntest;
 ptest=2;
 qtest=3;
@@ -63,7 +64,7 @@ for iter=1:10%npts
 
 
     Nxy1=Nvec(iter);
-    
+
     [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;%calls magpie
 
     [Phiort,OrtN]=GramSchmidt(Phi); %orthogonalise the basis of phi
@@ -75,23 +76,35 @@ for iter=1:10%npts
         Phi(:,nQ) = Phitemp ;
     end
     clear Phitemp
- 
+
 
 
     if iter ==1
         Phiref=Phi;
         Nxref=Nx;
         Nyref=Ny;
-    
+
     else
-        
+
         [Phi,Om] = eigenMAC(Phiref,Nxref,Nyref,Phi,Nx,Ny,h,Nmodes,Lx,Ly,Om);
 
+        %[Phiort,OrtN]=GramSchmidt(Phi); %orthogonalise the basis of phi,
+        %not necessarry, just the normalize is useful
+
+        for nQ = 1 : Nmodes % normalize the basis
+            Phitemp   = Phi(:,nQ) ;
+            Phinorm   = trapzIntcalc(Phitemp.*Phitemp,h,Nx,Ny) ;
+            Phitemp   = Phitemp / sqrt(Phinorm) ;
+            Phi(:,nQ) = Phitemp ;
+        end
+        clear Phitemp
+
+
         %[Phi,Om] = eigenMAC(Phiref,Nxref,Nyref,Phi,Nx,Ny,h,Nmodes,Lx,Ly,Om);
-        
-         Phi = eigensign(Phiref,Nxref,Nyref,Phi,Nx,Ny,T,Nmodes,Lx,Ly);
+
+        Phi = eigensign(Phiref,Nxref,Nyref,Phi,Nx,Ny,T,Nmodes,Lx,Ly);
         %Phiref=Phi;
-        
+
     end
 
     Nxy2=Nx*Ny;
@@ -109,11 +122,23 @@ for iter=1:10%npts
     clear Phitemp
 
 
-     if iter ==1
+    if iter ==1
         Psiref=Psi;
     else
-        
+
         [Psi,Om2] = eigenMAC(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Nmodes,Lx,Ly,Om2);
+
+
+        %[Psiort,OrtN]=GramSchmidt(Psi); %orthogonalise the basis of phi
+        %not necessarry, just the normalize is useful
+        
+        for nQ = 1 : Nmodes % normalize the basis
+            Psitemp   = Psi(:,nQ) ;
+            Psinorm   = trapzIntcalc(Psitemp.*Psitemp,h,Nx,Ny) ;
+            Psitemp   = Psitemp / sqrt(Psinorm) ;
+            Psi(:,nQ) = Psitemp ;
+        end
+        clear Phitemp
 
         %[Psi,Om2] = eigenMAC(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Nmodes,Lx,Ly,Om2);
 
@@ -142,7 +167,7 @@ for iter=1:10%npts
         %Phiknorm   = trapzIntcalc(Phik.*Phik,h,Nx,Ny);
         %Psiknorm   = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
         for p = 1 : Ntensor
-            Phip = Phi(:,p);
+            Phip = Phi(:,2);
             Phipnorm   = trapzIntcalc(Phip.*Phip,h,Nx,Ny) ;
             for q = p : Ntensor
                 Phiq = Phi(:,q) ; Psiq = Psi(:,q);
@@ -163,11 +188,11 @@ for iter=1:10%npts
                 if iter == ite1
 
                     if k==ktest
-                        
+
                         if p==ptest
-                            
+
                             if q==qtest
-                                
+
 
                                 %Hmat=Psik.*LPhipPhiq;
                                 Hmat=Phip;
@@ -180,8 +205,14 @@ for iter=1:10%npts
                                 subplot(3,3,ite2)
                                 %figure
                                 pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
-                                 shading interp
-                                if ite1 <17 
+                                daspect([1 1 Lx/Ly])
+                                set(gca,'xtick',[])
+                                set(gca,'ytick',[])
+                                title([ num2str(Ny+1) '\times' num2str(Nx+1)])
+                                set(gca,'Fontsize',20)
+                                colormap(colorMap)
+                                shading interp
+                                if ite1 <17
                                     ite1=ite1+1;
                                     ite2=ite2+1;
                                 end
@@ -205,7 +236,7 @@ for iter=1:10%npts
     %
     %             mesh(X,Y,3000*(mdShape1),(abs(mdShape1)),'FaceColor','texturemap') ;
     %Emat(k,p,q,:)=Phik.*LPhipPsiq;
-    
+
     H111(iter)=Hv(ntest,1,1);
     H121(iter)=Hv(ntest,2,1);
     H131(iter)=Hv(ntest,3,1);
@@ -224,7 +255,7 @@ for iter=1:10%npts
     H441(iter)=Hv(ntest,4,4);
 
     sumH(1,iter)=sum(sum(sum(abs(Hv(1:Nmodes,:,:)))));
-    
+
     Hsp=Hv;
     Hsp(abs(Hv)<1e-1)=0;
     switch iter
@@ -242,14 +273,14 @@ for iter=1:10%npts
 
 
     end
-    
+
     clear Hv
     %toc
     %nvec(iter)=Nx*Ny;
 
 end
 %%
- figure
+figure
 subplot(4,4,1)
 semilogx(hvec,(H111),LineWidth=3,Marker="o")
 xlabel('h')
@@ -370,27 +401,27 @@ set(gca,'FontSize',20)
 
 %%
 figure
- % subplot(2,2,1)
+% subplot(2,2,1)
 semilogx(hvec,sumH(1,:),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^1_{i,j}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
-% 
+%
 % % subplot(2,2,2)
 % % semilogx(hvec,sumH(11,:),LineWidth=3,Marker="o")
 % % xlabel('h')
 % % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^2_{i,j}'])
 % % set (gca,'xdir','reverse')
 % % set(gca,'FontSize',20)
-% % 
+% %
 % % subplot(2,2,3)
 % % semilogx(hvec,sumH(12,:),LineWidth=3,Marker="o")
 % % xlabel('h')
 % % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^3_{i,j}'])
 % % set (gca,'xdir','reverse')
 % % set(gca,'FontSize',20)
-% % 
+% %
 % % subplot(2,2,4)
 % % semilogx(hvec,sumH(13,:),LineWidth=3,Marker="o")
 % % xlabel('h')
@@ -399,7 +430,7 @@ set(gca,'FontSize',20)
 % % set(gca,'FontSize',20)
 
 %%
-Htest=sparse(squeeze(Hsp9(1,:,:)))
+Htest=sparse(squeeze(Hsp9(1,:,:)));
 figure
 spy(Htest)
 title('Non zero H^{1}_{i,j} coefficients for fully free plate')
@@ -425,7 +456,7 @@ title("Phi")
 colormap(flipud(gray))
 %% Phitest
 % Phitest=randn(size(Phi));
-% 
+%
 % for i=1:Nmodes
 %     for j=1:Nmodes
 %         tem=Phitest(:,i)'*Phitest(:,j);
@@ -463,25 +494,59 @@ title("post GS")
 colorbar
 colormap(flipud(gray))
 %%
-mdShape = reshape(Phiort(:,3),[(Ny+1),(Nx+1)]);
+
+% 
+% n = 256;  % Number of colors
+% 
+% % Define control colors (as RGB triplets)
+% key_colors = [
+%     0.3,  0.0,  0.5;   % dark purple
+%     0.75,  0.0,  0.75;   % medium purple
+%     0.75,  0.75,  0.75;   % neutral gray
+%     0.9,  0.4,  0.1;   % burnt orange
+%     1.0,  0.9, 0.3    % warm yellow-orange
+% ];
+% 
+% % Positions for interpolation
+% x = linspace(0, 1, size(key_colors,1));
+% xi = linspace(0, 1, n);
+% 
+% % Interpolate each channel
+% r = interp1(x, key_colors(:,1), xi, 'pchip');
+% g = interp1(x, key_colors(:,2), xi, 'pchip');
+% b = interp1(x, key_colors(:,3), xi, 'pchip');
+% 
+% % Combine into colormap
+% custom_map = [r', g', b'];
+% 
+% % Apply the colormap
+% colormap(custom_map);
+% colorbar;  % Optional: visualize the colormap
+
+%%
+mdShape = reshape(Phi(:,5),[(Ny+1),(Nx+1)]);
 
 figure
 pcolor(X,Y,3000*(mdShape));
+daspect([1 1 Lx/Ly])
+colorMap = load('Ha3ColorMap.mat').custom_map;
+colormap(colorMap)
 shading interp
+
 %%
 
 
 
 % test=Hsp10-Hsp9;
 % test(abs(test)<1e2)=0;
-% 
+%
 % test=sparse(squeeze(test(1,:,:)));
 % figure
 % spy(test)
 %% Save parameters
 
 if ~exist("./param/", 'dir')
-       mkdir("./param/")
+    mkdir("./param/")
 end
 
 %save('./param/PlaqueThèse100modes1.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
