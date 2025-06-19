@@ -10,15 +10,15 @@ colorMap = load('Ha3ColorMap.mat').custom_map;
 
 %% ------------------------------------------------------------------------
 % custom params
-rho     = 7850 ;
-E       = 210e+9 ;
+rho     = 7860 ;
+E       = 2e+11 ;
 nu      = 0.3 ;
 Lz      = 4e-3 ;
-Lx      = 100e-2 ;
-Ly      = Lx ;
+Lx      = 40e-2 ;
+Ly      = 80e-2 ;
 T       = 0 ;
-Nmodes  =7;
-npts=10;
+Nmodes  =10;
+npts=40;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(1.5,2.2,npts));
 tmagpie2=zeros(npts,1);
@@ -42,6 +42,7 @@ BCsPsi  = [1e15 1e15 ; 1e15 1e15 ; 1e15 1e15 ; 1e15 1e15] ;
 Ntensor = Nmodes;
 ldim    = [Lx Ly Lz] ;
 %%
+nxtestvec=ones(npts,1);
 ntest=2;
 ktest=ntest;
 ptest=2;
@@ -51,7 +52,7 @@ mtest=1;
 ite1=2;
 ite2=1;
 figure
-for iter=1:10%npts
+for iter=1:npts
     %------------------------------------------------------------------------
 
     %tic
@@ -61,12 +62,16 @@ for iter=1:10%npts
     %h       = sqrt(Lx*Ly)*hvec(iter) ;
     h=Lx/Nvec(iter);
     hvec(iter)=h;
+    
+    
 
 
     Nxy1=Nvec(iter);
 
     [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;%calls magpie
 
+  
+    
     [Phiort,OrtN]=GramSchmidt(Phi); %orthogonalise the basis of phi
 
     for nQ = 1 : Nmodes % normalize the basis
@@ -155,7 +160,7 @@ for iter=1:10%npts
     zeta = (zetafourth).^(1/4) ;
 
     Hv = zeros(Ntensor,Ntensor,Ntensor) ;
-    Ev = zeros(Ntensor,Ntensor,Ntensor) ;
+    %Ev = zeros(Ntensor,Ntensor,Ntensor) ;
 
     Dxx = DxxBuild(Nx,Ny,h) ;
     Dyy = DyyBuild(Nx,Ny,h) ;
@@ -183,7 +188,7 @@ for iter=1:10%npts
                 %Hv(p,k,q) = Hv(k,p,q);
                 %Hv(k,q,p) =  Hv(k,p,q);
                 Hv(k,q,p) = trapzIntcalc(Psik.*LPhipPhiq,h,Nx,Ny);%/sqrt(Psiknorm*Phipnorm*Phiqnorm);
-                %Ev(k,p,q) = trapzIntcalc(Phik.*LPhipPsiq,h,Nx,Ny)/sqrt(Phiknorm*Phipnorm*Psiqnorm) ;
+                %Ev(k,p,q) = trapzIntcalc(Phik.*LPhipPsiq,h,Nx,Ny);%/sqrt(Phiknorm*Phipnorm*Psiqnorm) ;
 
                 if iter == ite1
 
@@ -195,27 +200,27 @@ for iter=1:10%npts
 
 
                                 %Hmat=Psik.*LPhipPhiq;
-                                Hmat=Phip;
-                                mdShape = reshape(Hmat,[(Ny+1),(Nx+1)]) ;
-                                xax = (0:Nx)*h ;
-                                yax = (0:Ny)*h ;
-                                [X,Y] = meshgrid(xax,yax) ;
-
-
-                                subplot(3,3,ite2)
-                                %figure
-                                pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
-                                daspect([1 1 Lx/Ly])
-                                set(gca,'xtick',[])
-                                set(gca,'ytick',[])
-                                title([ num2str(Ny+1) '\times' num2str(Nx+1)])
-                                set(gca,'Fontsize',20)
-                                colormap(colorMap)
-                                shading interp
-                                if ite1 <17
-                                    ite1=ite1+1;
-                                    ite2=ite2+1;
-                                end
+                                % Hmat=Phip;
+                                % mdShape = reshape(Hmat,[(Ny+1),(Nx+1)]) ;
+                                % xax = (0:Nx)*h ;
+                                % yax = (0:Ny)*h ;
+                                % [X,Y] = meshgrid(xax,yax) ;
+                                % 
+                                % 
+                                % subplot(3,3,ite2)
+                                % %figure
+                                % pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
+                                % daspect([1 1 Lx/Ly])
+                                % set(gca,'xtick',[])
+                                % set(gca,'ytick',[])
+                                % title([ num2str(Ny+1) '\times' num2str(Nx+1)])
+                                % set(gca,'Fontsize',20)
+                                % colormap(colorMap)
+                                % shading interp
+                                % if ite1 <17
+                                %     ite1=ite1+1;
+                                %     ite2=ite2+1;
+                                % end
                             end
                         end
                     end
@@ -273,12 +278,44 @@ for iter=1:10%npts
 
 
     end
-
+  if Nx*h-Nxref*hvec(1) ~= 0
+        disp("This point is fudged")
+        nxtestvec(iter)=0;
+        %fix(Lx/h)
+        % Lx=Lx+h/2;
+        % Ly=Ly+h/2;
+    end
     clear Hv
+   
+
+    %assert((Nx*h-Nxref*hvec(1)==0),'ALERT ROUNDING ERROR ALERT')
     %toc
     %nvec(iter)=Nx*Ny;
 
 end
+
+%% Compute gamma
+% gamma=zeros(Nmodes,Nmodes,Nmodes,Nmodes);
+% filcoeff=0;
+% Npsi=Nmodes;
+% for s = 1;%1 : Ntensor
+%     for m = 26;%1 : Ntensor
+%         for n = 1 : Ntensor
+%             for k = 1 : Ntensor
+%                 for l = 1 : Npsi
+% 
+%                     filcoeff=filcoeff+ Hsp(l,m,n)*Hsp(s,l,k)/(2*zeta(l)^4);
+% 
+%                 end
+%                 gamma(s,k,m,n)= filcoeff;
+%                 filcoeff=0;
+%             end
+%         end
+%     end
+% end
+
+
+
 %%
 figure
 subplot(4,4,1)
@@ -400,9 +437,10 @@ set(gca,'FontSize',20)
 
 
 %%
+plotnum=find(nxtestvec);
 figure
 % subplot(2,2,1)
-semilogx(hvec,sumH(1,:),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),sumH(1,plotnum),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^1_{i,j}'])
 set (gca,'xdir','reverse')
