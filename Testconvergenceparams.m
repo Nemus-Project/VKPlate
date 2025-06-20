@@ -15,7 +15,7 @@ E       = 2e+11 ;
 nu      = 0.3 ;
 Lz      = 4e-3 ;
 Lx      = 40e-2 ;
-Ly      = 80e-2 ;
+Ly      = 40e-2 ;
 T       = 0 ;
 Nmodes  =10;
 npts=40;
@@ -43,10 +43,10 @@ Ntensor = Nmodes;
 ldim    = [Lx Ly Lz] ;
 %%
 nxtestvec=ones(npts,1);
-ntest=2;
+ntest=1;
 ktest=ntest;
-ptest=2;
-qtest=3;
+ptest=1;
+qtest=1;
 ltest=1;
 mtest=1;
 ite1=2;
@@ -279,7 +279,14 @@ for iter=1:npts
 
     end
   if Nx*h-Nxref*hvec(1) ~= 0
-        disp("This point is fudged")
+        disp("x is fudged")
+        nxtestvec(iter)=0;
+        %fix(Lx/h)
+        % Lx=Lx+h/2;
+        % Ly=Ly+h/2;
+  end
+   if Ny*h-Nyref*hvec(1) ~= 0
+        disp("y is fudged")
         nxtestvec(iter)=0;
         %fix(Lx/h)
         % Lx=Lx+h/2;
@@ -293,7 +300,7 @@ for iter=1:npts
     %nvec(iter)=Nx*Ny;
 
 end
-
+plotnum=find(nxtestvec);
 %% Compute gamma
 % gamma=zeros(Nmodes,Nmodes,Nmodes,Nmodes);
 % filcoeff=0;
@@ -319,28 +326,28 @@ end
 %%
 figure
 subplot(4,4,1)
-semilogx(hvec,(H111),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H111(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{1,1}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,2)
-semilogx(hvec,(H211),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H211(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{2,1}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,3)
-semilogx(hvec,(H311),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H311(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{3,1}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,4)
-semilogx(hvec,(H411),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H411(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{4,1}'])
 set (gca,'xdir','reverse')
@@ -348,49 +355,49 @@ set(gca,'FontSize',20)
 
 
 subplot(4,4,5)
-semilogx(hvec,(H121),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H121(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{1,2}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,6)
-semilogx(hvec,(H221),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H221(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{2,2}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,7)
-semilogx(hvec,(H321),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H321(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{3,2}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,8)
-semilogx(hvec,(H421),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H421(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{4,2}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,9)
-semilogx(hvec,(H131),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H131(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{1,3}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,10)
-semilogx(hvec,(H231),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H231(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{2,3}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,11)
-semilogx(hvec,(H331),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H331(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{3,3}'])
 set (gca,'xdir','reverse')
@@ -398,7 +405,7 @@ set(gca,'FontSize',20)
 
 
 subplot(4,4,12)
-semilogx(hvec,(H431),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H431(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{4,3}'])
 set (gca,'xdir','reverse')
@@ -406,21 +413,21 @@ set(gca,'FontSize',20)
 
 
 subplot(4,4,13)
-semilogx(hvec,(H141),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H141(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{1,4}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,14)
-semilogx(hvec,(H241),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H241(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{2,4}'])
 set (gca,'xdir','reverse')
 set(gca,'FontSize',20)
 
 subplot(4,4,15)
-semilogx(hvec,(H341),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H341(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{3,4}'])
 set (gca,'xdir','reverse')
@@ -428,7 +435,7 @@ set(gca,'FontSize',20)
 
 
 subplot(4,4,16)
-semilogx(hvec,(H441),LineWidth=3,Marker="o")
+semilogx(hvec(1,plotnum),(H441(1,plotnum)),LineWidth=3,Marker="o")
 xlabel('h')
 ylabel(['Value of H^' num2str(ntest) '_{4,4}'])
 set (gca,'xdir','reverse')
@@ -437,7 +444,7 @@ set(gca,'FontSize',20)
 
 
 %%
-plotnum=find(nxtestvec);
+
 figure
 % subplot(2,2,1)
 semilogx(hvec(1,plotnum),sumH(1,plotnum),LineWidth=3,Marker="o")
@@ -468,7 +475,7 @@ set(gca,'FontSize',20)
 % % set(gca,'FontSize',20)
 
 %%
-Htest=sparse(squeeze(Hsp9(1,:,:)));
+Htest=sparse(squeeze(Hsp(1,:,:)));
 figure
 spy(Htest)
 title('Non zero H^{1}_{i,j} coefficients for fully free plate')
