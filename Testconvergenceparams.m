@@ -172,7 +172,7 @@ for iter=1:npts
         %Phiknorm   = trapzIntcalc(Phik.*Phik,h,Nx,Ny);
         %Psiknorm   = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
         for p = 1 : Ntensor
-            Phip = Phi(:,2);
+            Phip = Phi(:,p);
             Phipnorm   = trapzIntcalc(Phip.*Phip,h,Nx,Ny) ;
             for q = p : Ntensor
                 Phiq = Phi(:,q) ; Psiq = Psi(:,q);
