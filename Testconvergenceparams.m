@@ -5,6 +5,7 @@
 clear all
 close all
 clc
+addpath '/Users/alexis/Documents/MATLAB/VKPlate/private/magpie'
 colorMap = load('Ha3ColorMap.mat').custom_map;
 
 
@@ -15,10 +16,11 @@ E       = 2e+11 ;
 nu      = 0.3 ;
 Lz      = 4e-3 ;
 Lx      = 40e-2 ;
-Ly      = 40e-2 ;
+Ly      = 80e-2 ;
 T       = 0 ;
 Nmodes  =10;
-npts=40;
+Npsi=Nmodes*5;
+npts=15;
 %hvec=[0.01,0.009,0.008,0.007,0.006,0.005,0.004,0.003,0.002];
 Nvec=floor(logspace(1.5,2.2,npts));
 tmagpie2=zeros(npts,1);
@@ -52,6 +54,7 @@ mtest=1;
 ite1=2;
 ite2=1;
 figure
+Gamcon=zeros(Nmodes,npts);%convergence matrix
 for iter=1:npts
     %------------------------------------------------------------------------
 
@@ -62,16 +65,16 @@ for iter=1:npts
     %h       = sqrt(Lx*Ly)*hvec(iter) ;
     h=Lx/Nvec(iter);
     hvec(iter)=h;
-    
-    
+
+
 
 
     Nxy1=Nvec(iter);
 
     [Om,Phi,Nx,Ny,~,~]       = magpie(rho,E,nu,T,ldim,h,BCsPhi,Nmodes,"none",true) ;%calls magpie
 
-  
-    
+
+
     [Phiort,OrtN]=GramSchmidt(Phi); %orthogonalise the basis of phi
 
     for nQ = 1 : Nmodes % normalize the basis
@@ -114,7 +117,7 @@ for iter=1:npts
 
     Nxy2=Nx*Ny;
 
-    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Nmodes,"none",true) ;
+    [Om2,Psi,~,~,~,zetafourth] = magpie(rho,E,nu,T,ldim,h,BCsPsi,Npsi,"none",true) ;
 
     [Psiort,OrtN]=GramSchmidt(Psi); %orthogonalise the basis of phi
 
@@ -131,12 +134,12 @@ for iter=1:npts
         Psiref=Psi;
     else
 
-        [Psi,Om2] = eigenMAC(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Nmodes,Lx,Ly,Om2);
+        [Psi,Om2] = eigenMAC(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Npsi,Lx,Ly,Om2);
 
 
         %[Psiort,OrtN]=GramSchmidt(Psi); %orthogonalise the basis of phi
         %not necessarry, just the normalize is useful
-        
+
         for nQ = 1 : Nmodes % normalize the basis
             Psitemp   = Psi(:,nQ) ;
             Psinorm   = trapzIntcalc(Psitemp.*Psitemp,h,Nx,Ny) ;
@@ -147,7 +150,7 @@ for iter=1:npts
 
         %[Psi,Om2] = eigenMAC(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Nmodes,Lx,Ly,Om2);
 
-        Psi = eigensign(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Nmodes,Lx,Ly);
+        Psi = eigensign(Psiref,Nxref,Nyref,Psi,Nx,Ny,h,Npsi,Lx,Ly);
 
         % Psiref=Psi;
         % Nxref=Nx;
@@ -159,7 +162,7 @@ for iter=1:npts
 
     zeta = (zetafourth).^(1/4) ;
 
-    Hv = zeros(Ntensor,Ntensor,Ntensor) ;
+    Hv = zeros(Npsi,Ntensor,Ntensor) ;
     %Ev = zeros(Ntensor,Ntensor,Ntensor) ;
 
     Dxx = DxxBuild(Nx,Ny,h) ;
@@ -167,8 +170,9 @@ for iter=1:npts
     Dxy = DxyBuild(Nx,Ny,h) ;
 
     tic;
-    for k = 1 : Ntensor
-        Phik = Phi(:,k) ; Psik = Psi(:,k) ;
+    for k = 1 : Npsi
+        %Phik = Phi(:,k) ;
+        Psik = Psi(:,k) ;
         %Phiknorm   = trapzIntcalc(Phik.*Phik,h,Nx,Ny);
         %Psiknorm   = trapzIntcalc(Psik.*Psik,h,Nx,Ny);
         for p = 1 : Ntensor
@@ -202,11 +206,11 @@ for iter=1:npts
                                 %Hmat=Psik.*LPhipPhiq;
                                 % Hmat=Phip;
                                 % mdShape = reshape(Hmat,[(Ny+1),(Nx+1)]) ;
-                                % xax = (0:Nx)*h ;
-                                % yax = (0:Ny)*h ;
-                                % [X,Y] = meshgrid(xax,yax) ;
-                                % 
-                                % 
+                                xax = (0:Nx)*h ;
+                                yax = (0:Ny)*h ;
+                                [X,Y] = meshgrid(xax,yax) ;
+
+                                %
                                 % subplot(3,3,ite2)
                                 % %figure
                                 % pcolor(X,Y,3000*(mdShape));%,(abs(mdShape)));%,'FaceColor','texturemap') ;
@@ -231,12 +235,12 @@ for iter=1:npts
         end
     end
     tvk=toc;
-    % mdShape1 = reshape(Hmat(2,2,1,:),[(Ny+1),(Nx+1)]) ;
-    % clear Hmat
-    %              xax = (0:Nx)*h ;
-    %             yax = (0:Ny)*h ;
-    %             [X,Y] = meshgrid(xax,yax) ;
-    %
+    %  mdShape1 = reshape(Hmat(2,2,1,:),[(Ny+1),(Nx+1)]) ;
+    % % clear Hmat
+    %               xax = (0:Nx)*h ;
+    %              yax = (0:Ny)*h ;
+    %              [X,Y] = meshgrid(xax,yax) ;
+    % %
     %             figure
     %
     %             mesh(X,Y,3000*(mdShape1),(abs(mdShape1)),'FaceColor','texturemap') ;
@@ -278,14 +282,14 @@ for iter=1:npts
 
 
     end
-  if Nx*h-Nxref*hvec(1) ~= 0
+    if Nx*h-Nxref*hvec(1) ~= 0
         disp("x is fudged")
         nxtestvec(iter)=0;
         %fix(Lx/h)
         % Lx=Lx+h/2;
         % Ly=Ly+h/2;
-  end
-   if Ny*h-Nyref*hvec(1) ~= 0
+    end
+    if Ny*h-Nyref*hvec(1) ~= 0
         disp("y is fudged")
         nxtestvec(iter)=0;
         %fix(Lx/h)
@@ -293,35 +297,78 @@ for iter=1:npts
         % Ly=Ly+h/2;
     end
     clear Hv
-   
+
 
     %assert((Nx*h-Nxref*hvec(1)==0),'ALERT ROUNDING ERROR ALERT')
     %toc
     %nvec(iter)=Nx*Ny;
 
+    Ev=permute(Hsp,[3 1 2]);
+
+
+
+
+filcoeff=0;
+
+Npsivec=[1:Npsi];
+pt=1;
+for st = pt
+    for mt = pt
+        for nt = pt
+            for kt = pt
+                for lt = 1 : Npsi
+
+                    filcoeff=filcoeff+ Hsp(lt,mt,nt)*Ev(st,lt,kt)/(2*zeta(lt)^4);
+                    Gamcon(lt,iter) = filcoeff;
+
+                end
+                filcoeff=0;
+            end
+        end
+    end
 end
+
+ end
 plotnum=find(nxtestvec);
+
+%%
+
+%Ev=permute(Hsp,[3 1 2]);
+
+
+
+
+
 %% Compute gamma
-% gamma=zeros(Nmodes,Nmodes,Nmodes,Nmodes);
+%gamma=zeros(Nmodes,Nmodes,Nmodes,Nmodes);
+% Gamcon=zeros(Nmodes,1);%convergence vector
 % filcoeff=0;
-% Npsi=Nmodes;
-% for s = 1;%1 : Ntensor
-%     for m = 26;%1 : Ntensor
-%         for n = 1 : Ntensor
-%             for k = 1 : Ntensor
+% %Npsi=Nmodes;
+% Npsivec=[1:Npsi];
+% p=4;
+% for s = p
+%     for m = p
+%         for n = p
+%             for k = p
 %                 for l = 1 : Npsi
 % 
-%                     filcoeff=filcoeff+ Hsp(l,m,n)*Hsp(s,l,k)/(2*zeta(l)^4);
+%                     filcoeff=filcoeff+ Hsp(l,m,n)*Ev(s,l,k)/(2*zeta(l)^4);
+%                     Gamcon(l,1) = filcoeff;
 % 
 %                 end
-%                 gamma(s,k,m,n)= filcoeff;
 %                 filcoeff=0;
 %             end
 %         end
 %     end
 % end
-
-
+% 
+% 
+% figure
+% plot(Npsivec,Gamcon,"LineWidth",4)
+% title("Convergence \Gamma against the number of in-plane modes")
+% xlabel("N_\Psi")
+% ylabel("\Gamma")
+% set(gca,"FontSize",26)
 
 %%
 figure
@@ -540,9 +587,9 @@ colorbar
 colormap(flipud(gray))
 %%
 
-% 
+%
 % n = 256;  % Number of colors
-% 
+%
 % % Define control colors (as RGB triplets)
 % key_colors = [
 %     0.3,  0.0,  0.5;   % dark purple
@@ -551,25 +598,28 @@ colormap(flipud(gray))
 %     0.9,  0.4,  0.1;   % burnt orange
 %     1.0,  0.9, 0.3    % warm yellow-orange
 % ];
-% 
+%
 % % Positions for interpolation
 % x = linspace(0, 1, size(key_colors,1));
 % xi = linspace(0, 1, n);
-% 
+%
 % % Interpolate each channel
 % r = interp1(x, key_colors(:,1), xi, 'pchip');
 % g = interp1(x, key_colors(:,2), xi, 'pchip');
 % b = interp1(x, key_colors(:,3), xi, 'pchip');
-% 
+%
 % % Combine into colormap
 % custom_map = [r', g', b'];
-% 
+%
 % % Apply the colormap
 % colormap(custom_map);
 % colorbar;  % Optional: visualize the colormap
 
 %%
-mdShape = reshape(Phi(:,5),[(Ny+1),(Nx+1)]);
+xax = (0:Nx)*h ;
+yax = (0:Ny)*h ;
+[X,Y] = meshgrid(xax,yax) ;
+mdShape = reshape(Phi(:,6),[(Ny+1),(Nx+1)]);
 
 figure
 pcolor(X,Y,3000*(mdShape));

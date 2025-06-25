@@ -51,7 +51,7 @@ rho     = 900 ;
 nu      = 0.4 ;
 Lz      = 8e-5 ;
 Lx      = 4.3e-2 ;
-Ly      = Lx;
+Ly      = 2*Lx;
 D       = E * Lz^3 / 12 / (1-nu^2);
 sigma   = rho*Lz;
 T       = 0%2;%2;
@@ -171,3 +171,12 @@ filename='Test1modev2';
 %save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 
 Om(1)./(2*pi)
+
+%% Test coupling
+Htest=sparse(squeeze(Hv(1,:,:)));
+figure
+spy(Htest)
+title('Non zero H^{1}_{i,j} coefficients for fully free plate')
+xlabel('i modes')
+ylabel('j modes')
+set(gca,'FontSize',20)
