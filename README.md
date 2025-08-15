@@ -1,4 +1,5 @@
 # VKPlate
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16880838.svg)](https://doi.org/10.5281/zenodo.16880838)
 
 Implementation of a Föppl–von Kármán (VK) plate.
 
