@@ -49,12 +49,12 @@ clc
 E       = 4e+9 ;
 rho     = 900 ; 
 nu      = 0.4 ;
-Lz      = 8e-5 ;
+Lz      = 4e-5 ;
 Lx      = 4.3e-2 ;
-Ly      = 2*Lx;
+Ly      = Lx;
 D       = E * Lz^3 / 12 / (1-nu^2);
 sigma   = rho*Lz;
-T       = 0%2;%2;
+T       = 1;%2;%2;
 
 
 % E       =  200000000000.0 ;
@@ -68,8 +68,9 @@ T       = 0%2;%2;
 
 % Numerical parameters
 
-Nx=7;
-Nmodes  = Nx ;
+Nx=200;
+Nmodes  = 20 ;
+Npsi=50;
 % Derived values
 Nvec=[5 Nx];
 npts=length(Nvec);
@@ -166,9 +167,9 @@ if ~exist("./param/", 'dir')
     mkdir("./param/")
 end
 
-filename='Test1modev2';
+filename='kfkjqest20modespurple50PsiT=1fix';
 
-%save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
+save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 
 Om(1)./(2*pi)
 
@@ -176,7 +177,7 @@ Om(1)./(2*pi)
 Htest=sparse(squeeze(Hv(1,:,:)));
 figure
 spy(Htest)
-title('Non zero H^{1}_{i,j} coefficients for fully free plate')
+title('Non zero H^{1}_{i,j} coefficients for fully clamped plate')
 xlabel('i modes')
 ylabel('j modes')
 set(gca,'FontSize',20)

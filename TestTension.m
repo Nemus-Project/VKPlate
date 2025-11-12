@@ -1,5 +1,5 @@
 clear all
-close all
+%close all
 clc
 %%
 % This code computes the modes of the displacement and Airy's stress of a
@@ -47,20 +47,27 @@ addpath ./private/magpie
 %% Variable declaration
 
 % Physical parameters
-
-
 E       = 4e+9 ;
 rho     = 900 ; 
 nu      = 0.4 ;
-Lz      = 4e-5 ;
-Lx      = 4.3e-2 ;
+%sigma   = rho*2e-5;
+Tvec       = [0:16]*0.2250;
+Phit=zeros(40401,17);
+Lzvec=[1,2,2.5,4,5,8,12]*10^(-5);
+Lxvec=[4.3e-2,4e-2,3.8e-2,3.5e-2];
+freqshift=zeros(length(Tvec),length(Lzvec))
+
+for it=1:length(Lzvec)
+Lz      = Lzvec(it)
+%Lz      = 2e-5 ;
+%Lx      = Lxvec(it);
+Lx      = 4.3e-2;
 Ly      = Lx;
 D       = E * Lz^3 / 12 / (1-nu^2);
-sigma   = rho*Lz;
-Tvec       = [0:8]*0.01;
-freqshift=zeros(9,1)
-for iter = 1:9
-T       = Tvec(iter)/sigma
+%sigma   = rho*Lz;
+
+for itit = 1:length(Tvec)
+T       = Tvec(itit);
 
 
 % E       =  200000000000.0 ;
@@ -74,7 +81,7 @@ T       = Tvec(iter)/sigma
 
 % Numerical parameters
 Nmodes  = 5 ;
-Nx=400;
+Nx=200;
 
 % Derived values
 Nvec=[100 Nx];
@@ -176,7 +183,51 @@ yax = (0:Ny)*h ;
 % 
 % save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 
-freqshift(iter)=Om(1)./(2*pi)
+freqshift(itit,it)=Om(1)./(2*pi);
+Phit(:,itit)=Phi(:,1);
+
 end
+end
+%%
+% newcolors = [
+%              0.75 0.75 0.75
+%              0.85   0.64  0.12
+%              0.8 0.4 0
+%              0.69 0.28 0.82
+%              0 0.7 0
+%              0.667, 0.063, 0.2
+%              0 0.4470 0.7410
+%              0 0 0
+%              0.1 0.50 0.95
+%              0 0 0 ]; % consistent with previous
+
+newcolors = [
+              0.75 0.75 0.75
+             0.85   0.64  0.12
+             0.8 0.4 0
+             0.69 0.28 0.82
+             0.667, 0.063, 0.2
+             0.349, 0.522, 0.392
+             0.345, 0.561, 0.737
+             ];%consistent with reality
+
+% newcolors = [
+%              0.8 0.4 0
+%              0 0 0
+%              0.8 0.4 0
+%              0 0 0
+%              ];
+%%
 figure
-plot(Tvec,freqshift)
+colororder(newcolors)
+plot(Tvec,freqshift(:,1:length(Lzvec)),"LineWidth",5);%,"Marker","o","MarkerSize",15)
+%hold on
+%plot(freqshift(:,3),Tvec,"LineWidth",3,"Linestyle","--","Marker","o","MarkerSize",15)
+set(gca,"FontSize",26)
+xlabel("T_0 (N/m)")
+ylabel("Frequency of the first mode (Hz)")
+legend("10\mum","20\mum","25\mum","40\mum","50\mum","80\mum","120\mum")
+
+
+%%
+% 

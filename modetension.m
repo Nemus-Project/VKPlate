@@ -20,7 +20,7 @@ nu      = 0.4 ;
 Lz      = 1e-5 ;
 Lx      = 4.3e-2 ;
 Ly      = Lx ;
-T       = 1 ;
+T       = 0 ;
 Nmodes  =10;
 Npsi=50;
 npts=8;
@@ -394,187 +394,13 @@ plot(Npsivec(1:Npsi),squeeze(real(Gamcon(1:Npsi,hplot))),LineWidth=3,Color='k')
 set(gca,'FontSize',20)
 ylabel("\Gamma_{ppp}^p")
 xlabel("Number of in plane modes N_\Psi")
-%% Compute gamma
-%gamma=zeros(Nmodes,Nmodes,Nmodes,Nmodes);
-% Gamcon=zeros(Nmodes,1);%convergence vector
-% filcoeff=0;
-% %Npsi=Nmodes;
-% Npsivec=[1:Npsi];
-% p=4;
-% for s = p
-%     for m = p
-%         for n = p
-%             for k = p
-%                 for l = 1 : Npsi
-% 
-%                     filcoeff=filcoeff+ Hsp(l,m,n)*Ev(s,l,k)/(2*zeta(l)^4);
-%                     Gamcon(l,1) = filcoeff;
-% 
-%                 end
-%                 filcoeff=0;
-%             end
-%         end
-%     end
-% end
-% 
-% 
-% figure
-% plot(Npsivec,Gamcon,"LineWidth",4)
-% title("Convergence \Gamma against the number of in-plane modes")
-% xlabel("N_\Psi")
-% ylabel("\Gamma")
-% set(gca,"FontSize",26)
 
 %%
-figure
-subplot(4,4,1)
-semilogx(hvec(1,plotnum),(H111(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{1,1}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,2)
-semilogx(hvec(1,plotnum),(H211(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{2,1}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,3)
-semilogx(hvec(1,plotnum),(H311(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{3,1}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,4)
-semilogx(hvec(1,plotnum),(H411(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{4,1}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-
-subplot(4,4,5)
-semilogx(hvec(1,plotnum),(H121(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{1,2}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,6)
-semilogx(hvec(1,plotnum),(H221(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{2,2}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,7)
-semilogx(hvec(1,plotnum),(H321(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{3,2}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,8)
-semilogx(hvec(1,plotnum),(H421(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{4,2}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,9)
-semilogx(hvec(1,plotnum),(H131(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{1,3}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,10)
-semilogx(hvec(1,plotnum),(H231(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{2,3}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,11)
-semilogx(hvec(1,plotnum),(H331(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{3,3}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-
-subplot(4,4,12)
-semilogx(hvec(1,plotnum),(H431(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{4,3}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-
-subplot(4,4,13)
-semilogx(hvec(1,plotnum),(H141(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{1,4}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,14)
-semilogx(hvec(1,plotnum),(H241(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{2,4}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-subplot(4,4,15)
-semilogx(hvec(1,plotnum),(H341(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{3,4}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-
-
-subplot(4,4,16)
-semilogx(hvec(1,plotnum),(H441(1,plotnum)),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of H^' num2str(ntest) '_{4,4}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
 
 
 
 %%
 
-figure
-% subplot(2,2,1)
-semilogx(hvec(1,plotnum),sumH(1,plotnum),LineWidth=3,Marker="o")
-xlabel('h')
-ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^1_{i,j}'])
-set (gca,'xdir','reverse')
-set(gca,'FontSize',20)
-%
-% % subplot(2,2,2)
-% % semilogx(hvec,sumH(11,:),LineWidth=3,Marker="o")
-% % xlabel('h')
-% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^2_{i,j}'])
-% % set (gca,'xdir','reverse')
-% % set(gca,'FontSize',20)
-% %
-% % subplot(2,2,3)
-% % semilogx(hvec,sumH(12,:),LineWidth=3,Marker="o")
-% % xlabel('h')
-% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^3_{i,j}'])
-% % set (gca,'xdir','reverse')
-% % set(gca,'FontSize',20)
-% %
-% % subplot(2,2,4)
-% % semilogx(hvec,sumH(13,:),LineWidth=3,Marker="o")
-% % xlabel('h')
-% % ylabel(['Value of \Sigma_{i,j}^{' num2str(Nmodes) '} H^4_{i,j}'])
-% % set (gca,'xdir','reverse')
-% % set(gca,'FontSize',20)
 
 %%
 Htest=sparse(squeeze(Hsp(1,:,:)));
@@ -601,25 +427,7 @@ figure
 imagesc(Orthog)
 title("Phi")
 colormap(flipud(gray))
-%% Phitest
-% Phitest=randn(size(Phi));
-%
-% for i=1:Nmodes
-%     for j=1:Nmodes
-%         tem=Phitest(:,i)'*Phitest(:,j);
-%         if abs(tem)<1e-5
-%             tem=0;
-%         else
-%             tem=1;
-%         end
-%         Orthog(i,j)=tem;
-%     end
-% end
-% figure
-% imagesc(Orthog)
-% title("Phi random")
-% colorbar
-% colormap(flipud(gray))
+
 %% Orth
 [Phiort,OrtN]=GramSchmidt(Phi);
 Orthog=zeros(Nmodes);
@@ -642,82 +450,8 @@ colorbar
 colormap(flipud(gray))
 %%
 
-%
-% n = 256;  % Number of colors
-%
-% % Define control colors (as RGB triplets)
-% key_colors = [
-%     0.3,  0.0,  0.5;   % dark purple
-%     0.75,  0.0,  0.75;   % medium purple
-%     0.75,  0.75,  0.75;   % neutral gray
-%     0.9,  0.4,  0.1;   % burnt orange
-%     1.0,  0.9, 0.3    % warm yellow-orange
-% ];
-%
-% % Positions for interpolation
-% x = linspace(0, 1, size(key_colors,1));
-% xi = linspace(0, 1, n);
-%
-% % Interpolate each channel
-% r = interp1(x, key_colors(:,1), xi, 'pchip');
-% g = interp1(x, key_colors(:,2), xi, 'pchip');
-% b = interp1(x, key_colors(:,3), xi, 'pchip');
-%
-% % Combine into colormap
-% custom_map = [r', g', b'];
-%
-% % Apply the colormap
-% colormap(custom_map);
-% colorbar;  % Optional: visualize the colormap
-
-%%
-% mus=2;
-% xax = (0:Nx)*h ;
-% yax = (0:Ny)*h ;
-% [X,Y] = meshgrid(xax,yax) ;
-% mdShape = reshape(Psi(:,mus),[(Ny+1),(Nx+1)]);
-% 
-% 
-% xaxr = (0:Nxref)*hvec(1);
-% yaxr = (0:Nyref)*hvec(1) ;
-% [Xr,Yr] = meshgrid(xaxr,yaxr) ;
-% mdShaperef = reshape(Psiref(:,mus),[(Nyref+1),(Nxref+1)]);
-% 
-% figure
-% %sgtitle(["Mode " num2str(mus) ])
-% subplot(1,2,1)
-% pcolor(X,Y,(mdShape));
-% daspect([1 1 Lx/Ly])
-% colorMap = load('Ha3ColorMap.mat').custom_map;
-% colormap(colorMap)
-% title("High Resolution")
-% shading interp
-% set(gca,'FontSize',26)
-% subplot(1,2,2)
-% pcolor(Xr,Yr,(mdShaperef));
-% daspect([1 1 Lx/Ly])
-% colorMap = load('Ha3ColorMap.mat').custom_map;
-% colormap(colorMap)
-% title("Low resolution")
-% shading interp
-% set(gca,'FontSize',26)
 %%
 
-
-
-% test=Hsp10-Hsp9;
-% test(abs(test)<1e2)=0;
-%
-% test=sparse(squeeze(test(1,:,:)));
-% figure
-% spy(test)
-%% Save parameters
-
-if ~exist("./param/", 'dir')
-    mkdir("./param/")
-end
-
-%save('./param/PlaqueThèse100modes1.mat','rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv');
 %%
 mus=1;
 xax = (0:Nx)*h ;
@@ -726,11 +460,11 @@ yax = (0:Ny)*h ;
 mdShape = reshape(Phi(:,mus),[(Ny+1),(Nx+1)]);
 ma=max(max(abs(mdShape)));
 figure%('Renderer', 'Painters')
-pcolor(X,Y,-(mdShape)./ma);
+surf(X,Y,-(mdShape)./ma);
 %alpha 0.9
-daspect([1 1 Lx/Ly])
-colorMap = load('Ha3ColorMap.mat').custom_map;
-colormap(colorMap)
+%daspect([1 1 Lx/Ly])
+%colorMap = load('Ha3ColorMap.mat').custom_map;
+%colormap(colorMap)
 set(gca,'XTick',[])
 set(gca,'YTick',[])
 %colormap(randmap)
@@ -738,39 +472,30 @@ set(gca,'YTick',[])
 caxis([-1 1])
 shading interp
 %colorbar
-%%
+%% Test Tension modeshape
+close all
+Phimem=zeros(size(mdShape));
+Phimem=sin(pi*xax/Lx)'*sin(pi*yax/Ly);
+
+Phimemlin = reshape(Phimem,[(Ny+1)*(Nx+1),1]);
+normem=trapzIntcalc(Phimemlin.*Phimemlin,h,Nx,Ny)
+normpla=trapzIntcalc(Phi(:,mus).*Phi(:,mus),h,Nx,Ny)
+
+Phimem2=Phimem/sqrt(normem);
+
 figure
-mesh(X,Y,(mdShape+5),'edgecolor', 'k','LineWidth',2)
-hold on
-contour(X,Y,(mdShape+1),'k','LineWidth',2)
-zlim([0 10])
-grid off
-axis off
-%%
-mdShape2=mdShape;
-mdShape2(:)=0;
-for iter=1:15
-mdShape2 = mdShape2 +rand*(reshape(Phi(:,iter),[(Ny+1),(Nx+1)]));
-end
-%%
+surf(Phimem2)
 figure
-mesh(X,Y,(mdShape2+300),'edgecolor', 'k','LineWidth',2)
-hold on
-contour(X,Y,(mdShape2),'k','LineWidth',2)
-zlim([0 max(max(mdShape2))*4])
-grid off
-axis off
+surf(mdShape(:,:))
 
-%%
-shouldsave = true;
-%%
-if shouldsave==false
-if ~exist("./param/", 'dir')
-    mkdir("./param/")
-end
+Phierr=100*abs(Phimem2(:,:)-abs(mdShape(:,:)))/max(max(Phimem2(:,:)));
 
-filename=['Test20modesamber50PsiT=0.4'];
-
-save(['./param/' filename '.mat'],'rho','E','nu','Lz','Lx','Ly','Nmodes','Phi','Om','Psi','Om2','Nx','Ny','h','X','Y','zetafourth','BCsPhi','BCsPsi','Hv','Npsi');
-Om(1)./(2*pi)
-end
+figure('Renderer', 'Painters')
+pcolor(Phierr)
+daspect([1 1 Lx/Ly])
+set(gca,'XTick',[])
+set(gca,'YTick',[])
+caxis([0 1])
+colorbar
+shading interp
+set(gca,'FontSize',24)
